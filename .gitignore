@@ -13,7 +13,10 @@ vscode/
 # Build & Release Artifacts
 out/
 dist/
-build/
+build/out/
+build/dist/
+build/headers/
+build/node/
 *.zip
 *.log
 

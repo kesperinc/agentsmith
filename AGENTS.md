@@ -8,7 +8,7 @@ designer, QA lead, release engineer, debugger, and more.
 
 본 프로젝트는 엔터프라이즈 코딩 에이전트 및 AI 솔루션 패키지 개발 시 다음 13가지 수칙과 가드레일을 100% 준수합니다:
 
-1. **시연용 MVP 개발 폴더 분리**: 코딩 에이전트 MVP부터 시작하며, 코드 및 아티팩트는 `agentsmith/coding-agent/` 및 지정 디렉터리에 분리하여 개발한다.
+1. **시연용 MVP 개발 폴더 분리**: 코딩 에이전트 MVP부터 시작하며, 코드 및 아티팩트는 `coding-agent/` 및 지정 디렉터리에 분리하여 개발한다.
 2. **Vibe Coding (바이브 코딩) 플랫폼 정의 & 도입**: 
    - *Vibe Coding 정의*: 개발자가 구체적 코딩 문법이나 보일러플레이트에 얽매이지 않고, 자연어 수준의 아이디어와 도메인 의도("Vibe")를 제시하면, AI 에이전트가 요구사항 분석, 스키마 정의, 다중 파일 생성, 샌드박스 테스트, 셀프코렉션까지 전 과정을 자율 완성하는 **'의도 중심 자율 개발 패러다임(Intent-Driven Autonomous Coding)'**.
 3. **Desktop-First ➔ Cloud ➔ On-Premise 3단계 배포**: 
@@ -21,14 +21,14 @@ designer, QA lead, release engineer, debugger, and more.
 9. **Agentic CLI (Codex, Claude Code, Antigravity) 연동**: MCP(Model Context Protocol)를 통해 CLI 및 IDE(VS Code/Jupyter)와 즉시 연동되도록 바인딩 인터페이스를 개발한다.
 10. **개발 기간 비용 최적화 (OpenRouter / Direct API Call)**: 온프레미스 GPU 전 단계에서는 OpenRouter API 및 직접 모델 호출을 활용하여 인프라 비용을 최소화한다.
 11. **시연용 샘플 준비**: 행사에 직접 관람객이 시연할 수 있는 파이썬/자바 실시간 Vibe 코딩 및 FIM 샘플 코드를 준비한다.
-12. **기초/상세 설계서 작성**: 플랫폼 전반의 기본설계서 및 상세설계서(`agentsmith/docs/2026-08-12_agent_smith_basic_detailed_design.md` 및 `YYYY-MM-DD_기초상세설계서.md` 형태)를 수립한다.
+12. **기초/상세 설계서 작성**: 플랫폼 전반의 기본설계서 및 상세설계서(`docs/2026-08-12_agent_smith_basic_detailed_design.md` 및 `YYYY-MM-DD_기초상세설계서.md` 형태)를 수립한다.
 13. **UI/UX 초안 HTML 작성**: 개발자 대시보드 및 워크스페이스 관리 웹 UI/UX 초안을 모던 HTML로 작성하여 제공한다.
 14. **Agent Smith 인프라, 인코딩 및 다국어 생성물 가드레일 (Harness)**:
     - 파이썬 가상환경(`uv`) 및 Node.js 초기 자동 설치 정책을 준수한다.
     - 2바이트 다국어 지원을 위해 실행 CLI 및 생성 파일 인코딩은 항상 UTF-8 Bom-less로 강제한다.
     - 에디터 메뉴 UI는 영문(English)으로 설계하되, AI가 작성하는 모든 코드 내 주석, 대화 출력, 로그는 사전에 지정한 현지어(기본값: 한국어)로 강제 변환되어 출력되도록 프롬프트 가드레일을 제어한다.
 15. **코드 변경 명세서 (Specs) 별도 폴더 관리 규칙**:
-    - 코드 작성이 진행되면 변경된 코드 파일 및 수정 사항에 대한 명세서(Specs)를 작성하여 프로젝트 내 지정된 별도의 `specs/` 폴더(예: `agentsmith/coding-agent/docs/specs/`)에 독립 저장한다.
+    - 코드 작성이 진행되면 변경된 코드 파일 및 수정 사항에 대한 명세서(Specs)를 작성하여 프로젝트 내 지정된 별도의 `specs/` 폴더(예: `coding-agent/docs/specs/`)에 독립 저장한다.
     - 모든 명세서 파일명은 아래 16번의 규칙을 따른다.
     - 변경된 파일을 사용자가 쉽게 인지하고 탐색할 수 있도록 변경 일자별 파일 수정 맵(Specs Map)을 명세서에 기록하여 투명하게 추적할 수 있도록 한다.
 16. **모든 문서(계획서, 보고서, 명세서 등)의 날짜 명명 규칙**:
