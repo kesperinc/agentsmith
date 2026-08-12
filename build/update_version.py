@@ -18,7 +18,7 @@ def update_version():
     
     # 1. package.json 업데이트
     if os.path.exists(package_json_path):
-        with open(package_json_path, "r", encoding="utf-8") as f:
+        with open(package_json_path, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
         
         orig_version = data.get("version", "0.1.0")
@@ -36,7 +36,7 @@ def update_version():
         
     # 2. product.json 업데이트
     if os.path.exists(product_json_path):
-        with open(product_json_path, "r", encoding="utf-8") as f:
+        with open(product_json_path, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
             
         orig_version = data.get("version", "0.1.0")
