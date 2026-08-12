@@ -8,16 +8,15 @@ echo.
 
 set BASE_DIR=%~dp0..\..
 set AGENT_SMITH_DIR=%BASE_DIR%\agentsmith
+set VSCODE_DIR=%AGENT_SMITH_DIR%\vscode
+set PATCHES_DIR=%AGENT_SMITH_DIR%\patches
 set BUILD_DIR=%AGENT_SMITH_DIR%\build
+set EXTENSION_DIR=%AGENT_SMITH_DIR%\extension
 set PATH=%BUILD_DIR%\node;%PATH%
 set NODE_TLS_REJECT_UNAUTHORIZED=0
 set SpectreMitigation=false
 call yarn config set strict-ssl false > NUL 2>&1
 call npm config set strict-ssl false > NUL 2>&1
-set VSCODE_DIR=%AGENT_SMITH_DIR%\vscode
-set PATCHES_DIR=%AGENT_SMITH_DIR%\patches
-set BUILD_DIR=%AGENT_SMITH_DIR%\build
-set EXTENSION_DIR=%AGENT_SMITH_DIR%\extension
 
 :: 1. Create directories if not exist
 if not exist "%VSCODE_DIR%" mkdir "%VSCODE_DIR%"
