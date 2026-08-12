@@ -85,8 +85,17 @@ if exist "%PATCHES_DIR%\*.patch" (
 )
 echo.
 
-:: 5. Install dependencies
-echo [4/4] Installing Code-OSS compile dependencies...
+:: 5. Create Directory.Build.props to bypass SpectreMitigation error
+echo [4/5] Creating Directory.Build.props to bypass SpectreMitigation...
+echo ^<Project^> > "%VSCODE_DIR%\Directory.Build.props"
+echo   ^<PropertyGroup^> >> "%VSCODE_DIR%\Directory.Build.props"
+echo     ^<SpectreMitigation^>false^</SpectreMitigation^> >> "%VSCODE_DIR%\Directory.Build.props"
+echo   ^</PropertyGroup^> >> "%VSCODE_DIR%\Directory.Build.props"
+echo ^</Project^> >> "%VSCODE_DIR%\Directory.Build.props"
+echo.
+
+:: 6. Install dependencies
+echo [5/5] Installing Code-OSS compile dependencies...
 cd /d "%VSCODE_DIR%"
 call yarn install --frozen-lockfile
 
