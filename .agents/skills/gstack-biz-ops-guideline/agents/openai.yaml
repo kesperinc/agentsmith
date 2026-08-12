@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-biz-ops-guideline"
+  short_description: "가이드라인: 제품 출시 후 운영 과정에서의 커뮤니케이션, 마케팅, CS 관리를 전담하는 에이전트 룰과 템플릿 제안을 수행합니다."
+  default_prompt: "Use gstack-biz-ops-guideline for this task."
+policy:
+  allow_implicit_invocation: true

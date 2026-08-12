@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글로벌 코딩 에이전트 TOP 3 분석 보고서 및 차별화 전략</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0d14;
+      --panel-bg: #121522;
+      --card-bg: #181c2e;
+      --card-border: #262c45;
+      --primary: #00abf0;
+      --accent-gold: #d4af37;
+      --text-main: #f0f3f9;
+      --text-muted: #8b95b5;
+      --success: #00e676;
+      --warning: #ff9100;
+      --cyan: #00e5ff;
+      --purple: #ab47bc;
+      --gradient-title: linear-gradient(135deg, #00e5ff 0%, #ab47bc 50%, #d4af37 100%);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; padding: 40px 20px; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; padding: 6px 16px; background: rgba(0, 229, 255, 0.15); border: 1px solid var(--cyan); color: var(--cyan); border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    h1 { font-family: var(--font-title); font-size: 2.5rem; font-weight: 800; background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 950px; margin: 0 auto; }
+
+    .card { background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; page-break-inside: avoid; }
+    .card-title { font-family: var(--font-title); font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card-title .icon { width: 12px; height: 12px; border-radius: 50%; background: var(--purple); }
+
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+    .alert-box { background: rgba(171, 71, 188, 0.08); border-left: 4px solid var(--purple); padding: 18px; border-radius: 8px; margin: 18px 0; }
+    
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; page-break-inside: avoid; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--card-border); }
+    th { background-color: var(--card-bg); color: var(--purple); font-weight: 700; font-family: var(--font-title); }
+
+    /* MS Word & Print Document Conversion Optimization Styles */
+    @media print {
+      body { background-color: #ffffff !important; color: #000000 !important; font-size: 11pt; padding: 0; }
+      .container { max-width: 100% !important; margin: 0 !important; }
+      header { background: #f5f5f5 !important; border: 1px solid #cccccc !important; color: #000000 !important; box-shadow: none !important; }
+      h1 { background: none !important; -webkit-text-fill-color: #000000 !important; color: #000000 !important; }
+      .card { background: #ffffff !important; border: 1px solid #dddddd !important; color: #000000 !important; page-break-inside: avoid; }
+      .card-title { color: #000000 !important; }
+      table { border: 1px solid #cccccc !important; }
+      th { background-color: #f0f0f0 !important; color: #000000 !important; border-bottom: 2px solid #000000 !important; }
+      td { border-bottom: 1px solid #dddddd !important; color: #000000 !important; }
+      .alert-box { background: #f9f9f9 !important; border-left: 4px solid #ab47bc !important; color: #000000 !important; }
+    }
+
+    footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 25px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">Global Benchmark & Strategy Report</div>
+    <h1>글로벌 코딩 에이전트 TOP 3 분석 보고서 및 차별화 전략</h1>
+    <p class="subtitle">Cursor, Claude Code, Continue.dev 비교 분석 및 온프레미스 폐쇄망 차별화 전략 보고서</p>
+  </header>
+
+  <!-- Section 1: TOP 3 Analysis -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon"></div>
+      1. 글로벌 대표 코딩 에이전트 TOP 3 비교 분석 (Benchmark Matrix)
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>평가 항목</th>
+          <th>1. Cursor (AI-Native IDE)</th>
+          <th>2. Claude Code (Agentic CLI)</th>
+          <th>3. Continue.dev (Open-Source Extension)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>핵심 형태</strong></td>
+          <td>독립 AI-Native IDE (VS Code 기반)</td>
+          <td>터미널 CLI 기반 에이전트</td>
+          <td>VS Code / JetBrains 익스텐션</td>
+        </tr>
+        <tr>
+          <td><strong>주요 장점</strong></td>
+          <td>Composer 모드, 다중 파일 동시 수정, 뛰어난 UI</td>
+          <td>터미널 내 복잡한 코드 추론, CLI 스크립트 실행</td>
+          <td>100% 오픈소스, 커스텀 LLM 및 온프레미스 자율성</td>
+        </tr>
+        <tr>
+          <td><strong>주요 단점</strong></td>
+          <td>폐쇄망 온프레미스 구축 불가능 (SaaS 의존)</td>
+          <td>Anthropic 퍼블릭 API 연동 필수 (외부 통신)</td>
+          <td>엔터프라이즈 샌드박스 오케스트레이션 부재</td>
+        </tr>
+        <tr style="background: rgba(171, 71, 188, 0.1); font-weight: bold;">
+          <td><strong>온프레미스 폐쇄망</strong></td>
+          <td><span style="color: #ff5252;">불가능</span> (SaaS 전용)</td>
+          <td><span style="color: #ff5252;">불가능</span> (Anthropic API)</td>
+          <td><span style="color: var(--success);">100% 지원</span> (Ollama/vLLM)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 2: Developer Preferred Features -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--cyan);"></div>
+      2. 개발자 선호 기능 도출 및 우선개발 4대 항목 (Priority Backlog)
+    </div>
+
+    <div class="grid-3">
+      <div style="background: var(--card-bg); padding: 18px; border-radius: 12px;">
+        <h4 style="color: var(--cyan); margin-bottom: 6px;">[우선순위 1] FIM 100ms 완결</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">타자 조작 시 100ms 내 `Tab` 키로 코드가 실시간 자동 완성되는 초저지연 속도감.</p>
+      </div>
+      <div style="background: var(--card-bg); padding: 18px; border-radius: 12px;">
+        <h4 style="color: var(--cyan); margin-bottom: 6px;">[우선순위 2] IDE+CLI 연동</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">MCP 라우터를 통해 VS Code와 Antigravity CLI가 백엔드 세션을 공유 구동.</p>
+      </div>
+      <div style="background: var(--card-bg); padding: 18px; border-radius: 12px;">
+        <h4 style="color: var(--cyan); margin-bottom: 6px;">[우선순위 3] 샌드박스 셀프코렉션</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">pytest 실행 및 에러 발생 시 스스로 로그를 읽고 코드를 보정하는 자율 루프.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: /office-hours Lens -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--accent-gold);"></div>
+      3. `/office-hours` 렌즈: 시연 / 기술 홍보 / 오픈소스 차별화 우위 포인트
+    </div>
+
+    <div class="alert-box">
+      본 플랫폼은 상용 판매 목적이 아닌 **"10월 Red Hat 행사 라이브 시연"**, **"사내 AI 기술력 홍보"**, 그리고 **"오픈소스 생태계 기여"** 관점에서 독보적인 마케팅 및 기술적 매력을 발휘합니다.
+    </div>
+
+    <ul style="padding-left: 20px; font-size: 0.92rem; color: var(--text-main);">
+      <li style="margin-bottom: 10px;"><strong>부스 라이브 시연용 (Exhibition Demo):</strong> 샌드박스 터미널에서 빨간색 에러 로그가 발생한 뒤 1.5초 만에 초록색 `[SUCCESS]`로 자동 보정되는 <strong>Visual Self-Correction 연출</strong>.</li>
+      <li style="margin-bottom: 10px;"><strong>사내 AI 기술 홍보용 (Tech PR):</strong> 퍼블릭 클라우드 LLM 대비 사내 OpenShift AI (SNO) 인프라 사용 시 연간 60% 이상 인프라 비용 절감 수치를 시각 증명.</li>
+      <li><strong>오픈소스 공개용 (Open-Source Community):</strong> 표준 MCP Router 및 Portable vLLM Adapter Helm Chart를 커뮤니티에 공개하여 기술 리더십 확보.</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>Global Coding Agent Benchmark & Differentiation Analysis Report</p>
+    <p>© 2026 AI Architecture Engineering Team. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>

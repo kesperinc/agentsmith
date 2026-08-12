@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-monetization-strategy"
+  short_description: "가이드라인: 비즈니스 모델(BM)과 결제 아키텍처 수립 전반을 리드하며, 프리미엄(Freemium) 정책 및 과금 모델 설계를 전담합니다."
+  default_prompt: "Use gstack-monetization-strategy for this task."
+policy:
+  allow_implicit_invocation: true

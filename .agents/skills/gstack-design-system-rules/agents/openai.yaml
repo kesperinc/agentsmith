@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-design-system-rules"
+  short_description: "프론트엔드 코드를 기획하고 작성할 때 다음의 최신 트렌드 디자인 원칙 (Glassmorphism 등)을 전역으로 적용합니다. UI/UX 구현 시 사용하세요."
+  default_prompt: "Use gstack-design-system-rules for this task."
+policy:
+  allow_implicit_invocation: true

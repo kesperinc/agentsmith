@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-testing-packing-maintenance-guideline"
+  short_description: "Testing, Integration, Packaging, Deployment, CI/CD, Maintenance Mode Guideline. Specifies standard operating..."
+  default_prompt: "Use gstack-testing-packing-maintenance-guideline for this task."
+policy:
+  allow_implicit_invocation: true

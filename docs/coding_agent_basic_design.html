@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>엔터프라이즈 코딩 에이전트 플랫폼 기본설계서 & 상세설계서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
+  <style>
+    :root {
+      --bg-color: #0b0d14;
+      --panel-bg: #121522;
+      --card-bg: #181c2e;
+      --card-border: #262c45;
+      --primary: #00abf0;
+      --accent-gold: #d4af37;
+      --text-main: #f0f3f9;
+      --text-muted: #8b95b5;
+      --success: #00e676;
+      --warning: #ff9100;
+      --cyan: #00e5ff;
+      --purple: #ab47bc;
+      --gradient-title: linear-gradient(135deg, #00e5ff 0%, #ab47bc 50%, #d4af37 100%);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; padding: 40px 20px; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; padding: 6px 16px; background: rgba(0, 229, 255, 0.15); border: 1px solid var(--cyan); color: var(--cyan); border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    h1 { font-family: var(--font-title); font-size: 2.5rem; font-weight: 800; background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 950px; margin: 0 auto; }
+
+    .card { background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; page-break-inside: avoid; }
+    .card-title { font-family: var(--font-title); font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card-title .icon { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
+    .alert-box { background: rgba(0, 229, 255, 0.08); border-left: 4px solid var(--cyan); padding: 18px; border-radius: 8px; margin: 18px 0; }
+    
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; page-break-inside: avoid; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--card-border); }
+    th { background-color: var(--card-bg); color: var(--cyan); font-weight: 700; font-family: var(--font-title); }
+
+    pre code { display: block; background: #0d0e17; padding: 18px; border-radius: 10px; border: 1px solid var(--card-border); font-family: var(--font-code); font-size: 0.85rem; color: var(--cyan); overflow-x: auto; line-height: 1.45; }
+    .mermaid { background: var(--card-bg); padding: 15px; border-radius: 12px; margin: 15px 0; overflow-x: auto; }
+
+    @media print {
+      body { background-color: #ffffff !important; color: #000000 !important; font-size: 11pt; padding: 0; }
+      .container { max-width: 100% !important; margin: 0 !important; }
+      header { background: #f5f5f5 !important; border: 1px solid #cccccc !important; color: #000000 !important; box-shadow: none !important; }
+      h1 { background: none !important; -webkit-text-fill-color: #000000 !important; color: #000000 !important; }
+      .card { background: #ffffff !important; border: 1px solid #dddddd !important; color: #000000 !important; page-break-inside: avoid; }
+      .card-title { color: #000000 !important; }
+      table { border: 1px solid #cccccc !important; }
+      th { background-color: #f0f0f0 !important; color: #000000 !important; border-bottom: 2px solid #000000 !important; }
+      td { border-bottom: 1px solid #dddddd !important; color: #000000 !important; }
+      .alert-box { background: #f9f9f9 !important; border-left: 4px solid #00aaff !important; color: #000000 !important; }
+    }
+
+    footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 25px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">Architecture Basic & Detailed Specification</div>
+    <h1>엔터프라이즈 코딩 에이전트 플랫폼 기본설계서 & 상세설계서</h1>
+    <p class="subtitle">Vibe Coding 패키징, Desktop-First 구축 및 Red Hat OpenShift AI (SNO) 온프레미스 1-Click 이식 아키텍처 규격서</p>
+  </header>
+
+  <!-- Section 1: Vibe Coding Definition & Concepts -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon"></div>
+      1. Vibe Coding (바이브 코딩) 정의 및 개발 목적 (Concept & Purpose)
+    </div>
+
+    <div class="alert-box">
+      <strong>💡 Vibe Coding (바이브 코딩)의 정의:</strong><br>
+      개발자가 보일러플레이트 코드 작성이나 구체적 코딩 문법에 얽매이지 않고, 자연어 수준의 비즈니스 의도, 디자인 감성, 고차원적 기능 컨셉("Vibe")을 제시하면, AI 에이전트가 요구사항 명세 ➔ 다중 파일 생성 ➔ 샌드박스 빌드/테스트 ➔ 셀프코렉션까지 전 과정을 자율 완성하는 <strong>'의도 중심 자율 개발 패러다임 (Intent-Driven Autonomous Coding)'</strong>입니다.
+    </div>
+
+    <div class="grid-2">
+      <div style="background: var(--card-bg); padding: 18px; border-radius: 12px;">
+        <h4 style="color: var(--cyan); margin-bottom: 8px;">A. 3단계 배포 이식성 전략 (Desktop First)</h4>
+        <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 15px;">
+          <li>• **Stage 1 (Desktop First)**: 로컬 데스크톱에서 먼저 동작하는 1차 버전을 구축</li>
+          <li>• **Stage 2 (GCP Cloud)**: 구글 클라우드 기반 OpenRouter 연동 및 인프라 비용 절감</li>
+          <li>• **Stage 3 (On-Premise)**: Red Hat OpenShift AI (SNO) 100% 폐쇄망 1-Click 포팅</li>
+        </ul>
+      </div>
+
+      <div style="background: var(--card-bg); padding: 18px; border-radius: 12px;">
+        <h4 style="color: var(--cyan); margin-bottom: 8px;">B. /office-hours 렌즈 차별화 경쟁력</h4>
+        <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 15px;">
+          <li>• **100% Air-Gapped On-Premise**: Cursor/Claude Code가 못하는 완전 폐쇄망 보장</li>
+          <li>• **MCP 기반 IDE + CLI 통합**: VS Code와 Agentic CLI 단일 백엔드 오케스트레이션</li>
+          <li>• **Visual Self-Correction 데모**: 터미널 에러 자동 보정 라이브 부스 연출</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Basic Architecture -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--purple);"></div>
+      2. 시스템 기본 아키텍처 (Basic System Architecture)
+    </div>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph Client_Layer ["Developer Workspace & Clients"]
+        IDE_VSCode["VS Code (Continue.dev)"]
+        IDE_Jupyter["Jupyter Notebook"]
+        Agent_CLI["Agentic CLI<br>(Codex / Claude Code / Antigravity)"]
+    end
+
+    subgraph Desktop_Or_Cloud ["Stage 1: Desktop First / Stage 2: GCP Cloud Environment"]
+        MCP_Gateway["MCP Gateway Router<br>(Port 3000)"]
+        Vibe_Engine["Vibe Coding Orchestration Engine<br>(Intent Parsing & Sandbox Runner)"]
+        OpenRouter_Gateway["OpenRouter / Direct API Adapter<br>(Development Stage)"]
+    end
+
+    subgraph External_Models ["Cloud Model Infrastructure"]
+        OpenRouter["OpenRouter API<br>(Claude 3.5 / Qwen2.5-Coder)"]
+    end
+
+    subgraph OnPrem_Target ["Stage 3 Target: On-Premise Environment"]
+        RHOAI_Cluster["Red Hat OpenShift AI (SNO)<br>(vLLM ServingRuntime - Port 8000)"]
+    end
+
+    Client_Layer <--> MCP_Gateway
+    MCP_Gateway <--> Vibe_Engine
+    Vibe_Engine <--> OpenRouter_Gateway
+    OpenRouter_Gateway <--> External_Models
+    OpenRouter_Gateway -. Porting Target .-> RHOAI_Cluster
+    </div>
+  </div>
+
+  <!-- Section 3: Workflow & Guardrails -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--warning);"></div>
+      3. 개발-배포-테스트 가드레일 및 워크플로우 (Development Workflow)
+    </div>
+
+    <h4 style="color: var(--cyan); margin-bottom: 10px;">작업 트라이어드 (Plan - Code - Doc) 가드레일 수칙</h4>
+    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+      모든 기능 개발 작업 시 다음 3가지 아티팩트가 1:1:1로 반사 작성되어야 Git 머지(Merge)가 가능합니다:
+    </p>
+    <pre><code>1. [작업계획서]: agentsmith/coding-agent/docs/plans/feature_name_plan.md
+2. [개발된 코드]: agentsmith/coding-agent/src/...
+3. [상세명세서]: agentsmith/coding-agent/docs/specs/feature_name_spec.md</code></pre>
+  </div>
+
+  <footer>
+    <p>Enterprise Coding Agent Basic & Detailed Architecture Specification</p>
+    <p>© 2026 AI Architecture Engineering Team. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>

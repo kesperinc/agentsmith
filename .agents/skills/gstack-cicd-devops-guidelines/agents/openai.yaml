@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-cicd-devops-guidelines"
+  short_description: ""
+  default_prompt: "Use gstack-cicd-devops-guidelines for this task."
+policy:
+  allow_implicit_invocation: true

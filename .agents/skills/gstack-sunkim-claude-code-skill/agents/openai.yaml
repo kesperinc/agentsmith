@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-sunkim-claude-code-skill"
+  short_description: "Workflow Harness for Planning. Enforces a 5-phase strict structured execution flow from Planning, Execution,..."
+  default_prompt: "Use gstack-sunkim-claude-code-skill for this task."
+policy:
+  allow_implicit_invocation: true

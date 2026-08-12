@@ -1,0 +1,6 @@
+interface:
+  display_name: "gstack-karpathy-guidelines"
+  short_description: "Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to..."
+  default_prompt: "Use gstack-karpathy-guidelines for this task."
+policy:
+  allow_implicit_invocation: true

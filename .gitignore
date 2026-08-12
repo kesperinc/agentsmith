@@ -1,0 +1,22 @@
+# Agent Smith IDE Local Git Ignore Rules
+
+# Python Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+
+# Node.js Dependencies & Portable Binary
+node_modules/
+coding-agent/bin/
+vscode/
+
+# Build & Release Artifacts
+out/
+dist/
+build/
+*.zip
+*.log
+
+# Secret keys
+.env
+*.key
