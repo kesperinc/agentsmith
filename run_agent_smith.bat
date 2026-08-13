@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 > nul
-title Agent Smith IDE Launcher (UTF-8 Enforced)
+title Agent Smith IDE Desktop Launcher
 echo =================================================================
-echo Launching Agent Smith IDE GUI Client...
+echo Launching Agent Smith IDE Desktop Client...
 echo =================================================================
 echo.
 
@@ -11,9 +11,10 @@ set PYTHONIOENCODING=utf-8
 set VSCODE_DEV=1
 set VSCODE_SKIP_PRELAUNCH=1
 
+:: Change working directory explicitly to vscode root
 cd /d "%~dp0vscode"
 
-:: Launch Agent Smith IDE GUI Window via agentsmith.exe
-start "" "%~dp0vscode\.build\electron\agentsmith.exe" "%~dp0vscode"
+:: Launch Desktop Client with explicit Working Directory (/D)
+start "" /D "%~dp0vscode" "%~dp0vscode\.build\electron\agentsmith.exe" .
 
-echo [OK] Agent Smith IDE GUI Client launched successfully on your screen!
+echo [OK] Agent Smith Desktop IDE launched successfully!
