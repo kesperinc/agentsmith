@@ -11,10 +11,7 @@ set PYTHONIOENCODING=utf-8
 set VSCODE_DEV=1
 set VSCODE_SKIP_PRELAUNCH=1
 
-:: Change working directory explicitly to vscode root
-cd /d "%~dp0vscode"
-
-:: Launch Desktop Client with explicit Working Directory (/D)
-start "" /D "%~dp0vscode" "%~dp0vscode\.build\electron\agentsmith.exe" .
+:: Launch Agent Smith Desktop IDE GUI Window
+start "" "%~dp0vscode\.build\electron\agentsmith.exe" "%~dp0vscode"
 
 echo [OK] Agent Smith Desktop IDE launched successfully!
