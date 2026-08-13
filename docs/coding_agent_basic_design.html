@@ -213,17 +213,27 @@ def main():
     </div>
   </div>
 
-  <!-- Section 5: Model Settings & Cost Analytics -->
+  <!-- Section 5: Model Settings & Cost Analytics (Under View Menu) -->
   <div class="card">
     <div class="card-title">
       <div class="icon" style="background: var(--success);"></div>
-      5. 모델 설정 탭 및 다중 모델 토큰/비용 모니터링 (Model Settings & Cost Analytics)
+      5. [보기 (View)] 메뉴 ➔ 토큰 & 비용 모니터링 대시보드 (View -> Cost Analytics Dashboard)
     </div>
 
-    <!-- Settings Tab Header simulation -->
-    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
-      <div style="padding: 8px 18px; background: rgba(0, 229, 255, 0.2); border: 1px solid var(--cyan); color: var(--cyan); border-radius: 20px; font-weight: 700; font-size: 0.85rem;">⚙️ Model Settings Tab</div>
-      <div style="padding: 8px 18px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-muted); border-radius: 20px; font-size: 0.85rem;">📊 Cost & Token Analytics</div>
+    <!-- View Menu Bar Navigation simulation -->
+    <div style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; font-size: 0.85rem;">
+      <span style="color: var(--text-muted);">파일(File)</span>
+      <span style="color: var(--text-muted);">편집(Edit)</span>
+      <span style="color: var(--text-muted);">선택(Selection)</span>
+      <span style="color: var(--cyan); font-weight: 700; border-bottom: 2px solid var(--cyan); padding-bottom: 8px;">▶ 보기 (View)</span>
+      <span style="color: var(--text-muted);">이동(Go)</span>
+      <span style="color: var(--text-muted);">도움말(Help)</span>
+    </div>
+
+    <!-- View Dropdown menu selection indication -->
+    <div style="background: #111422; border: 1px solid var(--cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 20px; font-size: 0.82rem; color: var(--cyan); display: flex; align-items: center; justify-content: space-between;">
+      <span>📌 [보기(View) 메뉴 항목] ➔ <strong>📊 토큰 & 비용 모니터링 대시보드 (Toggle Token & Cost Analytics)</strong></span>
+      <span style="background: rgba(0,229,255,0.2); padding: 4px 10px; border-radius: 4px;">Ctrl+Shift+M</span>
     </div>
 
     <!-- Table of Model Costs -->
