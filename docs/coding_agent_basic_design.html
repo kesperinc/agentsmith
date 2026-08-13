@@ -238,96 +238,50 @@ def main():
         </div>
       </div>
 
-      <!-- Right Category Panel -->
+      <!-- Right Category Panel: API Keys & Auto-Discovery -->
       <div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-bottom: 8px;">AI Models Configuration</div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
-          미국(USA), 중국(China), 한국(Korea) 전 세계 대표 LLM 및 Hugging Face 오픈소스 모델 API Key 및 접속 설정을 진행합니다.
+        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">AI Models Configuration & Key Manager</div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 15px;">
+          미국, 중국(Kimi, GLM-4 포함), 한국, Hugging Face 및 Local Engine(Ollama, LM Studio) API Key 입력 및 Auto-Discovery 헬스 체크를 통합 관리합니다.
         </p>
 
-        <table>
-          <thead>
-            <tr>
-              <th>국가 (Country)</th>
-              <th>모델 명칭 (Model Name)</th>
-              <th>자동 탐지 (Auto-Check)</th>
-              <th>프로바이더 (Provider)</th>
-              <th>연동 설정 (Key/Token)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>🇺🇸 미국</td>
-              <td><strong>Anthropic Claude 3.5 Sonnet</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>Anthropic / OpenRouter</td>
-              <td><code>anthropic.apiKey</code></td>
-            </tr>
-            <tr>
-              <td>🇺🇸 미국</td>
-              <td><strong>OpenAI GPT-4o</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>OpenAI Direct</td>
-              <td><code>openai.apiKey</code></td>
-            </tr>
-            <tr style="background: rgba(0,230,118,0.06);">
-              <td>🇨🇳 중국</td>
-              <td><strong>Qwen 2.5 Coder 32B</strong></td>
-              <td><span style="background: rgba(0,230,118,0.2); color: var(--success); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">ONLINE</span></td>
-              <td>Alibaba / OpenRouter</td>
-              <td><code>openrouter.apiKey</code> (Default)</td>
-            </tr>
-            <tr style="background: rgba(0,230,118,0.06);">
-              <td>🇨🇳 중국</td>
-              <td><strong>DeepSeek R1 Reasoning</strong></td>
-              <td><span style="background: rgba(0,230,118,0.2); color: var(--success); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">ONLINE</span></td>
-              <td>DeepSeek / OpenRouter</td>
-              <td><code>deepseek.apiKey</code></td>
-            </tr>
-            <tr>
-              <td>🇨🇳 중국 (신규)</td>
-              <td><strong>Moonshot Kimi Chat 128k</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>Moonshot AI Direct</td>
-              <td><code>moonshot.apiKey (MOONSHOT_API_KEY)</code></td>
-            </tr>
-            <tr>
-              <td>🇨🇳 중국 (신규)</td>
-              <td><strong>Zhipu GLM-4 / GLM-4 Flash</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>Zhipu AI Direct</td>
-              <td><code>zhipu.apiKey (ZHIPU_API_KEY)</code></td>
-            </tr>
-            <tr>
-              <td>🇰🇷 한국</td>
-              <td><strong>Naver HyperCLOVA X</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>Naver Cloud Platform</td>
-              <td><code>hyperclova.secretKey</code></td>
-            </tr>
-            <tr>
-              <td>🇰🇷 한국</td>
-              <td><strong>Upstage Solar Mini</strong></td>
-              <td><span style="background: rgba(255,145,0,0.2); color: var(--warning); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">OFFLINE</span></td>
-              <td>Upstage Console API</td>
-              <td><code>upstage.apiKey</code></td>
-            </tr>
-            <tr style="background: rgba(0,229,255,0.08);">
-              <td>🤗 오픈소스</td>
-              <td><strong>Hugging Face Inference API</strong></td>
-              <td><span style="background: rgba(0,229,255,0.2); color: var(--cyan); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">HF READY</span></td>
-              <td>Hugging Face Hub</td>
-              <td><code>huggingface.accessToken (HF_TOKEN)</code></td>
-            </tr>
-            <tr style="background: rgba(0, 229, 255, 0.12);">
-              <td>🖥️ Local (신규)</td>
-              <td><strong>Local Ollama / LM Studio</strong></td>
-              <td><span style="background: rgba(0,229,255,0.2); color: var(--cyan); padding: 2px 7px; border-radius: 10px; font-size: 0.73rem; font-weight: 700;">LOCAL ACTIVE</span></td>
-              <td>Local GPU / Custom Server</td>
-              <td><code>http://localhost:11434 (Ollama) / :1234</code></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Live Auto-Discovery Banner -->
+        <div style="background: rgba(0, 229, 255, 0.1); border: 1px solid var(--cyan); padding: 10px 14px; border-radius: 8px; margin-bottom: 15px; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
+          <span>🔍 <strong>Auto-Discovery Status:</strong> 2 Active Online / 9 Offline (Key Input Required)</span>
+          <span style="color: var(--cyan); font-weight: 700;">🟢 Auto-Scanner Running</span>
+        </div>
+
+        <!-- API Key Input Form Simulation -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.8rem;">
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🇺🇸 OpenAI API Key (aiModels.openaiKey)</label>
+            <input type="password" value="sk-proj-****************" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🇺🇸 Anthropic API Key (aiModels.anthropicKey)</label>
+            <input type="password" value="sk-ant-****************" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🇨🇳 Moonshot Kimi Key (aiModels.moonshotKey)</label>
+            <input type="password" value="sk-kimi-****************" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🇨🇳 Zhipu GLM-4 Key (aiModels.zhipuKey)</label>
+            <input type="password" value="glm-key-****************" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🇰🇷 Naver HyperCLOVA Secret (aiModels.hyperclovaKey)</label>
+            <input type="password" value="clova-secret-**********" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border);">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🤗 Hugging Face Token (aiModels.huggingfaceToken)</label>
+            <input type="password" value="hf_********************" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: #fff; padding: 6px; border-radius: 4px; font-size: 0.78rem;" readonly>
+          </div>
+          <div style="background: #111422; padding: 10px; border-radius: 6px; border: 1px solid var(--card-border); grid-column: span 2;">
+            <label style="color: var(--text-muted); display: block; margin-bottom: 4px;">🖥️ Local Ollama Server Endpoint (aiModels.localOllamaEndpoint)</label>
+            <input type="text" value="http://localhost:11434" style="width: 100%; background: #080a10; border: 1px solid var(--card-border); color: var(--cyan); padding: 6px; border-radius: 4px; font-size: 0.78rem; font-weight: 700;" readonly>
+          </div>
+        </div>
       </div>
     </div>
   </div>
