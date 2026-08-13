@@ -10,6 +10,8 @@ from pathlib import Path
 src_dir = Path(__file__).resolve().parent
 if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
+if str(src_dir.parent) not in sys.path:
+    sys.path.insert(0, str(src_dir.parent))
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -21,9 +23,14 @@ import time
 import smtplib
 from email.mime.text import MIMEText
 
-from adapters.llm_adapter import LLMAdapter, RECOMMENDED_CODING_MODELS
-from vibe.engine import VibeEngine
-from mcp.router import MCPRouter
+try:
+    from adapters.llm_adapter import LLMAdapter, RECOMMENDED_CODING_MODELS
+    from vibe.engine import VibeEngine
+    from mcp.router import MCPRouter
+except ModuleNotFoundError:
+    from src.adapters.llm_adapter import LLMAdapter, RECOMMENDED_CODING_MODELS
+    from src.vibe.engine import VibeEngine
+    from src.mcp.router import MCPRouter
 
 # 사내 이메일 OTP 저장용 인메모리 스토리지
 OTP_STORE = {}
