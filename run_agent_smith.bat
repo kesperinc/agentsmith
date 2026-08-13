@@ -8,11 +8,10 @@ echo.
 
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
+set VSCODE_SKIP_PRELAUNCH=1
 
-:: Change working directory to vscode root and launch Electron GUI Runner
+:: Change working directory to vscode root and launch Official Code Launcher
 cd /d "%~dp0vscode"
+call scripts\code.bat
 
-:: Run Node Official Electron Runner in dedicated standalone window
-start "Agent Smith IDE" node build/lib/electron.js
-
-echo [OK] Agent Smith Desktop IDE GUI Client launched!
+echo [OK] Agent Smith Desktop IDE launched successfully!
