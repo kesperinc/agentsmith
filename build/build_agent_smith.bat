@@ -94,8 +94,14 @@ echo   ^</PropertyGroup^> >> "%VSCODE_DIR%\Directory.Build.props"
 echo ^</Project^> >> "%VSCODE_DIR%\Directory.Build.props"
 echo.
 
-:: 6. Install dependencies
-echo [5/5] Installing Code-OSS compile dependencies...
+:: 6. Copy Custom Built-in Extension (agentsmith-chat)
+echo [5/6] Copying Agent Smith custom built-in extension...
+if not exist "%VSCODE_DIR%\extensions\agentsmith-chat" mkdir "%VSCODE_DIR%\extensions\agentsmith-chat"
+xcopy /S /Y /E "%EXTENSION_DIR%\agentsmith-chat" "%VSCODE_DIR%\extensions\agentsmith-chat" > NUL
+echo.
+
+:: 7. Install dependencies
+echo [6/6] Installing Code-OSS compile dependencies...
 cd /d "%VSCODE_DIR%"
 call yarn install --frozen-lockfile
 

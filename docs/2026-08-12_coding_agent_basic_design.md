@@ -97,6 +97,6 @@ flowchart TB
 | 단계 | 추진 과제 | 핵심 목표 |
 | :--- | :--- | :--- |
 | **Phase 1 (GCP Cloud)** | OpenRouter 연동 & MCP 라우터 구축 | CLI(Antigravity/Claude Code) & IDE 연동 검증 |
-| **Phase 2 (MVP UI/UX)** | 개발자 워크스페이스 UI/UX 구축 | 웹 대시보드 및 샌드박스 에러 셀프코렉션 시연 |
+| **Phase 2 (MVP UI/UX)** | 개발자 워크스페이스 UI/UX 구축 | 로컬 IDE 챗 패널 및 CLI 연동, 샌드박스 에러 셀프코렉션 시연 |
 | **Phase 3 (Sample Preparation)** | 시연용 샘플 앱 준비 | 파이썬/자바 실시간 FIM 및 비동기 리팩토링 샘플 |
 | **Phase 4 (On-Prem Porting)** | RHOAI SNO 이식 및 행사 전시 | 10월 Red Hat 행사 부스 라이브 시연 |

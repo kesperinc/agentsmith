@@ -1,0 +1,36 @@
+{
+  "name": "agentsmith-chat",
+  "displayName": "Agent Smith AI Chat Panel",
+  "description": "Enterprise Coding Agent Webview Chat Sidebar for Agent Smith IDE",
+  "version": "1.0.0",
+  "publisher": "kesperinc",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "agentsmith-ai-sidebar",
+          "title": "Agent Smith AI",
+          "icon": "media/logo-sidebar.png"
+        }
+      ]
+    },
+    "views": {
+      "agentsmith-ai-sidebar": [
+        {
+          "type": "webview",
+          "id": "agentsmith-chat-view",
+          "name": "Agent Smith Assistant",
+          "contextualTitle": "AI Chat"
+        }
+      ]
+    }
+  }
+}

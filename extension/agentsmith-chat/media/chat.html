@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Smith Assistant</title>
+    <link rel="stylesheet" href="${styleUri}">
+</head>
+<body>
+    <!-- 🔐 사내 보안 로그인 오버레이 (이메일 & OTP) -->
+    <div id="auth-overlay" class="overlay active">
+        <div class="auth-box">
+            <h2 class="auth-title">Agent Smith Login</h2>
+            <p class="auth-desc">사내 보안 정책에 따라 회사 이메일 인증이 필요합니다.</p>
+            
+            <!-- 1단계: 이메일 입력 -->
+            <div id="email-section" class="auth-section active">
+                <input type="email" id="auth-email" placeholder="사내 이메일 주소 (e.g. user@kesper.co.kr)">
+                <button id="btn-send-otp" class="btn-primary">OTP 코드 발송</button>
+            </div>
+            
+            <!-- 2단계: OTP 입력 -->
+            <div id="otp-section" class="auth-section">
+                <p class="otp-instruction">수신된 6자리 보안코드를 입력해 주세요.</p>
+                <input type="text" id="auth-otp" maxlength="6" placeholder="보안코드 6자리">
+                <button id="btn-verify-otp" class="btn-primary">로그인 승인</button>
+                <button id="btn-back-email" class="btn-secondary">이전 단계로</button>
+            </div>
+            
+            <p id="auth-message" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- 🤖 메인 AI 대화창 인터페이스 -->
+    <div class="chat-container">
+        <div class="chat-header">
+            <span class="header-status-dot"></span>
+            <span class="header-title">Agent Smith Assistant</span>
+        </div>
+        
+        <!-- 대화 내역 목록 -->
+        <div class="chat-messages" id="chat-messages">
+            <div class="message system-msg">
+                <strong>[시스템]</strong> 로그인 및 로컬 가상환경(.venv)이 성공적으로 활성화되었습니다.
+            </div>
+        </div>
+        
+        <!-- 입력 창 영역 -->
+        <div class="chat-input-area">
+            <div class="input-row">
+                <textarea id="chat-input" placeholder="에이전트에게 내릴 Vibe 명령을 입력하세요..."></textarea>
+                <button id="btn-mic" class="btn-icon" title="음성 인식 지시 (STT)">🎤</button>
+                <button id="btn-send" class="btn-primary-send" title="보내기">▶</button>
+            </div>
+            
+            <!-- 🤖 AI 모델 선택 영역 (Model Switcher) -->
+            <div class="model-row">
+                <label for="model-select" class="model-label">모델선택:</label>
+                <select id="model-select" class="model-dropdown">
+                    <option value="qwen/qwen-2.5-coder-32b-instruct" selected>Qwen 2.5 Coder 32B (SOTA)</option>
+                    <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                    <option value="deepseek/deepseek-coder">DeepSeek Coder V2 236B</option>
+                    <option value="openai/gpt-4o">GPT-4o Omnimodal</option>
+                    <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script src="${scriptUri}"></script>
+</body>
+</html>

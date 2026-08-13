@@ -7,7 +7,7 @@ import sys
 import os
 import time
 import subprocess
-import webbrowser
+
 import urllib.request
 import json
 from pathlib import Path
@@ -23,7 +23,7 @@ if sys.platform == "win32":
 # Paths setup
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 SRC_DIR = Path(__file__).resolve().parent
-UI_MOCKUP_PATH = BASE_DIR / "offering" / "coding_agent_ui_mockup.html"
+
 
 # 하드웨어 감지 모듈 연동을 위해 path 주입
 sys.path.append(str(SRC_DIR))
@@ -96,14 +96,7 @@ def start_backend_server():
     print("      [NOTICE] Backend server launch timeout. Proceeding with frontend standalone mode.")
     return proc
 
-def open_ui_dashboard():
-    print("[3/4] Launching Agent Smith React UI Dashboard in Browser...")
-    if UI_MOCKUP_PATH.exists():
-        file_url = UI_MOCKUP_PATH.as_uri()
-        print(f"      [OK] Opening Dashboard: {file_url}")
-        webbrowser.open(file_url)
-    else:
-        print(f"      [FAIL] UI mockup file not found at: {UI_MOCKUP_PATH}")
+
 
 def run_interactive_cli():
     print("\n[4/4] Interactive Agent Smith CLI Mode Ready!")
@@ -161,7 +154,6 @@ def main():
     print_banner()
     run_infrastructure_harness()
     server_proc = start_backend_server()
-    open_ui_dashboard()
     
     try:
         run_interactive_cli()

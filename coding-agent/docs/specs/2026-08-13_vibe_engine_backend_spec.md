@@ -1,4 +1,4 @@
-# [Spec] Vibe Coding Engine & MCP 백엔드 REST API 상세명세서
+# [Spec] Agent Smith Vibe Coding Engine & MCP 백엔드 REST API 상세명세서
 
 본 문서는 **엔터프라이즈 코딩 에이전트 MVP의 백엔드 REST API 및 MCP 라우터** 구현 상세 규격서입니다.
 
@@ -6,7 +6,7 @@
 
 ## 📌 1. 백엔드 개요
 * **서비스 엔트리포인트**: `agentsmith/coding-agent/src/main.py`
-* **서버 구동 포트**: REST API (8000), MCP JSON-RPC Gateway (3000)
+* **서버 구동 포트**: REST API (5000), MCP JSON-RPC Gateway (3000)
 * **주요 의존 패키지**: FastAPI, Uvicorn, Pydantic, httpx, pytest
 
 ---

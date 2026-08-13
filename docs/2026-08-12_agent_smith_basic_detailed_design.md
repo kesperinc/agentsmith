@@ -82,6 +82,19 @@ flowchart TB
 * **`mem0` (장기 기억)**:
   - 에디터와의 대화 과정에서 누적되는 사용자의 툴 설정(Ollama 스위치, 선호 라이브러리, 코딩 습관 등)을 로컬 SQLite DB에 벡터 임베딩 형태로 저장하여 다음 질문 시 자동으로 관련 규칙을 인젝션합니다.
 
+### 2.4 사내 보안 인증 및 지능형 확장 기능 설계
+* **사내 이메일 기반 OTP & LDAP 로그인**:
+  - Microsoft/GitHub 퍼블릭 클라우드 로그인 인프라를 삭제하는 대신, 사내 메일 연동을 위한 **Agent Smith OTP Auth Provider**를 추가합니다.
+  - 로그인 시 사내 이메일 입력 ➡️ 로컬/사내 SMTP 서버를 통해 6자리 OTP 인증 메일 전송 ➡️ 인증값 입력 완료 시 사용자 식별 토큰 발급.
+  - 사내 LDAP/AD 서버가 기구축된 환경에서는 이메일 및 LDAP 비밀번호를 직접 연동하여 1-Click 인증 수행.
+  - 이메일 ID의 해시값 기반으로 설정(Sync) 볼륨을 개별 격리 저장하여 폐쇄망 내 멀티테넌시 완결성 보장.
+* **음성 코딩 STT (Speech-to-Text) 및 음성 제어**:
+  - 마우스 코딩 및 키보드 입력이 불편하거나 핸즈프리 지시가 필요한 경우, Left Chat Panel의 마이크 토글 버튼을 통해 음성 인식을 지원합니다.
+  - Electron 기반 Web Audio API 또는 로컬 Whisper API 어댑터 인터페이스를 번들링하여, 수집된 오디오 버퍼를 고속으로 텍스트로 치환하고 에이전트 대화 입력 창에 자동 피딩(Feeding)합니다.
+* **AI 모델 동적 선택 (Model Switcher)**:
+  - 챗 패널 UI 하단 영역에 AI 모델 선택 드롭다운 뷰를 렌더링합니다.
+  - 사용자가 선택한 모델 ID(`qwen/qwen-2.5-coder-32b-instruct`, `anthropic/claude-3.5-sonnet` 등)는 REST API 요청 시 header 또는 JSON Payload에 포함되어 백엔드 MCP JSON-RPC Gateway에 의해 알맞은 LLM Serving Runtime 엔드포인트로 라우팅됩니다.
+
 ---
 
 ## 3. 초기 가드레일 (Harness) 및 다국어 규칙
