@@ -8,10 +8,10 @@ echo.
 
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
-set VSCODE_SKIP_PRELAUNCH=1
+set VSCODE_DEV=1
 
-:: Change working directory to vscode root and launch Official Code Launcher
+:: Change working directory to vscode root and launch Code - OSS.exe in new foreground window
 cd /d "%~dp0vscode"
-call scripts\code.bat
+start "" ".build\electron\Code - OSS.exe" "%~dp0vscode"
 
 echo [OK] Agent Smith Desktop IDE launched successfully!
