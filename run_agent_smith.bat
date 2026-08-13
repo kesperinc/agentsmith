@@ -10,11 +10,10 @@ set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
 set VSCODE_DEV=1
 set VSCODE_SKIP_PRELAUNCH=1
-set ELECTRON_ENABLE_LOGGING=1
 
 cd /d "%~dp0vscode"
 
-:: Launch Agent Smith IDE via built binary Code - OSS.exe with workspace directory
-start "" "%~dp0vscode\.build\electron\Code - OSS.exe" "%~dp0vscode"
+:: Launch Agent Smith IDE GUI Window via agentsmith.exe
+start "" "%~dp0vscode\.build\electron\agentsmith.exe" "%~dp0vscode"
 
 echo [OK] Agent Smith IDE GUI Client launched successfully on your screen!
