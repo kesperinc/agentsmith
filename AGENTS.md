@@ -62,3 +62,24 @@ Skills live in `.agents/skills/`. Invoke them by name (e.g., `/office-hours`).
 | `/guard` | Activate both careful + freeze at once. |
 | `/unfreeze` | Remove directory edit restrictions. |
 | `/gstack-upgrade` | Update gstack to the latest version. |
+
+---
+
+## 🛠️ 개발 브랜치 배포 가드레일 및 운영 가이드 (Branch & Deploy Guardrails)
+
+본 프로젝트는 `feature` -> `staging` -> `main` / `hotfix` 흐름의 개발 브랜치 배포 원칙을 100% 준수합니다:
+1. **`feature/*` (기능 개발)**: 모든 개별 신규 기능 및 버그 수정은 feature 브랜치에서 시작합니다.
+2. **`staging` (통합 테스트)**: 개발이 완료된 feature 브랜치는 staging 브랜치에 병합하여 통합 빌드와 QA 테스트를 거쳐야 합니다.
+3. **`main` (프로덕션 배포)**: staging 에서 모든 무결성 검증이 완료된 커밋만이 main 브랜치에 병합되어 배포될 수 있습니다.
+4. **`hotfix/*` (긴급 버그 픽스)**: 프로덕션 긴급 버그 발견 시 main 으로부터 직접 생성하여 수정 후 main 과 staging 에 각각 교차 머징합니다.
+
+---
+
+## 🧠 에이전트 인텔리전스 및 메모리 룰 (Mem0 & Graphify Rules)
+
+1. **Mem0 (로컬 기억 저장소)**:
+   - 본 프로젝트는 에이전트의 기억 영속화를 위해 `mem0ai` 및 Qdrant 벡터 데이터베이스를 활용합니다.
+   - 프로젝트 셋업 시 `2026-08-14_setup_mem0.ps1` 스크립트를 기동하여 `.agentsmith/` 디렉토리 설정 및 `agentsmith_default_memory` 컬렉션을 자동 생성합니다.
+2. **Graphify (지식 그래프 지침)**:
+   - 아키텍처 및 모듈 간 관계 분석 시 `graphify-out/` 하위의 그래프 리포트 및 위키 문서를 우선 검색합니다.
+   - 코드 변경 발생 시 AST 분석을 통한 지식 그래프 무결성을 위해 `graphify update .` 명령어를 반드시 실행합니다.

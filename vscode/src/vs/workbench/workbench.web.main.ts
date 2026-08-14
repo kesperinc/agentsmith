@@ -11,6 +11,8 @@
 // #######################################################################
 
 
+import 'vs/platform/telemetry/common/telemetry';
+
 //#region --- workbench common
 
 import 'vs/workbench/workbench.common.main';
