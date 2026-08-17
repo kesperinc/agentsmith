@@ -1,0 +1,63 @@
+# Agent Smith Workspace Syncthing Ignore Rules (.stignore)
+# UTF-8 BOM-less Encoding
+
+# ==========================================
+# 1. OS & Syncthing Metadata Files
+# ==========================================
+(?d).DS_Store
+(?d)Desktop.ini
+(?d)thumbs.db
+(?d)ehthumbs.db
+(?d).stversions
+(?d).syncthing.*.tmp
+
+# ==========================================
+# 2. Developer Binaries & Installer Tools
+# ==========================================
+vs_BuildTools.exe
+*.exe
+*.dll
+*.so
+*.dylib
+*.node
+*.lib
+*.a
+*.pdb
+*.obj
+*.o
+*.msi
+*.dmg
+*.iso
+
+# ==========================================
+# 3. Dependencies & Virtual Environments
+# ==========================================
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# ==========================================
+# 4. Build Outputs & Release Artifacts
+# ==========================================
+out/
+dist/
+build/
+.cache/
+.turbo/
+coverage/
+*.zip
+*.tar.gz
+*.tgz
+*.7z
+
+# ==========================================
+# 5. Environment Secrets & Logs
+# ==========================================
+.env
+.env.local
+*.key
+*.log
