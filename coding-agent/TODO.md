@@ -2,8 +2,25 @@
 
 본 문서는 **Agent Smith IDE (Custom Code-OSS AI Editor)**의 개발 과제 및 릴리즈 로드맵 현행화 목록입니다. 로컬 데스크톱 중심의 IDE 빌드, 브랜딩, 가드레일, 온프레미스 배포 호환성 확보 및 CLI/IDE 연동 기능에 집중하도록 작성되었습니다.
 
-* **최종 현행화 일자**: 2026년 8월 19일
+* **최종 현행화 일자**: 2026년 8월 20일
 * **개발 기조**: Windows 빌드 및 기능 완성을 최우선(Phase 1)으로 진행하며, **Antigravity 스타일 아티팩트/챗 패널 및 지능형 코어 엔진 고도화(Phase 2)**, **리눅스/온프레미스 Red Hat 배포 호환성(Phase 3)** 및 **AI Full Stack 세일즈 오퍼링(NVIDIA/Dell/MZC 비교 포털 & 4-Phase 로드맵)**을 전사 지원합니다.
+
+---
+
+## 🎯 0단계: PC 저장소 현행화 & Electron 클라이언트 장애 해결 (완료 - 2026-08-20)
+- [x] **타 PC 작업내역 수령 및 저장소 현행화**:
+  - [x] 원격 저장소 `origin/feature/setup-git-guardrails` (`65c5fb3`) 하드리셋 동기화 완료
+  - [x] PC 현행화 명세서 작성 ([2026-08-20_pc_synchronization_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_pc_synchronization_spec.md))
+- [x] **Electron 클라이언트 GUI 실행 장애 4단계 완벽 해결**:
+  - [x] [장애 1] `out/main` 누락 ➔ `vscode/out` 복사 로직 추가로 해결
+  - [x] [장애 2] 백엔드 콘솔 멈춤 ➔ PowerShell `Start-Process -WindowStyle Hidden` 비동기 백그라운드 런처 격리로 해결
+  - [x] [장애 3] 창 튕김 (Crash) ➔ `Antigravity IDE` 내 Electron 27 ABI 118 호환 C++ 네이티브 모듈 14종 오버레이 복사로 해결
+  - [x] [장애 4] 화면 검은색 멈춤 ➔ CJS loader 확장자 미지정 require 바이너리 별칭(Alias) 사본 생성 및 `node_modules.asar` 제거 후 100% Unpacked 모듈 구조로 해결
+- [x] **C# Native 1-Click 단일 실행 설치 바이너리 컴파일 완료**:
+  - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (697.82 MB) 구축 완료
+- [x] **통합 인수인계 보고서 작성**:
+  - [x] [`coding-agent/docs/2026-08-20_project_handover_report.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_project_handover_report.md)
+  - [x] [`coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md)
 
 ---
 
