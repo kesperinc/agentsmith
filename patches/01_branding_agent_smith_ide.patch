@@ -1,0 +1,74 @@
+diff --git a/package.json b/package.json
+index 7720eab..1ea0950 100644
+--- a/package.json
++++ b/package.json
+@@ -1,9 +1,9 @@
+ {
+-  "name": "code-oss-dev",
++  "name": "agent-smith-ide",
+   "version": "1.86.0",
+   "distro": "6c14240015f9a76b34c29b4212fb8df761106443",
+   "author": {
+-    "name": "Microsoft Corporation"
++    "name": "MegazoneCloud Corporation"
+   },
+   "license": "MIT",
+   "main": "./out/main",
+diff --git a/product.json b/product.json
+index b17eeda..018f20d 100644
+--- a/product.json
++++ b/product.json
+@@ -1,35 +1,35 @@
+ {
+-	"nameShort": "Code - OSS",
+-	"nameLong": "Code - OSS",
+-	"applicationName": "code-oss",
+-	"dataFolderName": ".vscode-oss",
+-	"win32MutexName": "vscodeoss",
++	"nameShort": "Agent Smith IDE",
++	"nameLong": "Agent Smith IDE",
++	"applicationName": "agent-smith-ide",
++	"dataFolderName": ".agentsmith-ide",
++	"win32MutexName": "agentsmithide",
+ 	"licenseName": "MIT",
+ 	"licenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
+ 	"serverLicenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
+ 	"serverGreeting": [],
+ 	"serverLicense": [],
+ 	"serverLicensePrompt": "",
+-	"serverApplicationName": "code-server-oss",
+-	"serverDataFolderName": ".vscode-server-oss",
+-	"tunnelApplicationName": "code-tunnel-oss",
+-	"win32DirName": "Microsoft Code OSS",
+-	"win32NameVersion": "Microsoft Code OSS",
+-	"win32RegValueName": "CodeOSS",
++	"serverApplicationName": "agent-smith-server",
++	"serverDataFolderName": ".agent-smith-server",
++	"tunnelApplicationName": "agent-smith-tunnel",
++	"win32DirName": "Agent Smith IDE",
++	"win32NameVersion": "Agent Smith IDE",
++	"win32RegValueName": "AgentSmithIDE",
+ 	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
+ 	"win32arm64AppId": "{{D1ACE434-89C5-48D1-88D3-E2991DF85475}",
+ 	"win32x64UserAppId": "{{CC6B787D-37A0-49E8-AE24-8559A032BE0C}",
+ 	"win32arm64UserAppId": "{{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
+-	"win32AppUserModelId": "Microsoft.CodeOSS",
+-	"win32ShellNameShort": "C&ode - OSS",
+-	"win32TunnelServiceMutex": "vscodeoss-tunnelservice",
+-	"win32TunnelMutex": "vscodeoss-tunnel",
+-	"darwinBundleIdentifier": "com.visualstudio.code.oss",
+-	"linuxIconName": "code-oss",
++	"win32AppUserModelId": "MegazoneCloud.AgentSmithIDE",
++	"win32ShellNameShort": "Agent Smith IDE",
++	"win32TunnelServiceMutex": "agentsmithide-tunnelservice",
++	"win32TunnelMutex": "agentsmithide-tunnel",
++	"darwinBundleIdentifier": "com.megazonecloud.agentsmith.ide",
++	"linuxIconName": "agent-smith-ide",
+ 	"licenseFileName": "LICENSE.txt",
+ 	"reportIssueUrl": "https://github.com/microsoft/vscode/issues/new",
+ 	"nodejsRepository": "https://nodejs.org",
+-	"urlProtocol": "code-oss",
++	"urlProtocol": "agent-smith-ide",
+ 	"webviewContentExternalBaseUrlTemplate": "https://{{uuid}}.vscode-cdn.net/insider/ef65ac1ba57f57f2a3961bfe94aa20481caca4c6/out/vs/workbench/contrib/webview/browser/pre/",
+ 	"builtInExtensions": [
+ 		{

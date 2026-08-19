@@ -28,13 +28,30 @@ if DIST_DIR.exists():
 
 DIST_DIR.mkdir(parents=True, exist_ok=True)
 
-# 2. Copy Electron Desktop App Binaries (vscode/.build/electron)
-ELECTRON_SRC = ROOT_DIR / "vscode" / ".build" / "electron"
+# 2. Copy Electron Desktop App Binaries (VSCode-win32-x64 or vscode/.build/electron)
+ELECTRON_SRC = ROOT_DIR / "VSCode-win32-x64"
+if not ELECTRON_SRC.exists():
+    ELECTRON_SRC = ROOT_DIR / "vscode" / ".build" / "electron"
 APP_DEST = DIST_DIR / "app"
 
 if ELECTRON_SRC.exists():
-    print(f"[*] Copying Electron binaries from {ELECTRON_SRC} to {APP_DEST}...")
+    print(f"[*] Copying Electron & Editor binaries from {ELECTRON_SRC} to {APP_DEST}...")
     shutil.copytree(ELECTRON_SRC, APP_DEST, symlinks=True)
+    
+    # Ensure conpty / node-pty native binaries are fully present in unpacked directory
+    PTY_UNPACKED_DEST = APP_DEST / "resources" / "app" / "node_modules.asar.unpacked" / "node-pty" / "build" / "Release"
+    PTY_UNPACKED_DEST.mkdir(parents=True, exist_ok=True)
+    
+    PTY_SOURCES = [
+        ROOT_DIR / "VSCode-win32-x64" / "resources" / "app" / "node_modules.asar.unpacked" / "node-pty" / "build" / "Release",
+        ROOT_DIR / "vscode" / "node_modules" / "node-pty" / "build" / "Release",
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "node_modules" / "node-pty" / "build" / "Release"
+    ]
+    for pty_src in PTY_SOURCES:
+        if pty_src.exists() and (pty_src / "conpty.node").exists():
+            print(f"[*] Ensuring terminal conpty.node binaries from {pty_src}...")
+            shutil.copytree(pty_src, PTY_UNPACKED_DEST, dirs_exist_ok=True)
+            break
 else:
     print(f"[!] Warning: {ELECTRON_SRC} not found. Please build electron first.")
 
@@ -69,7 +86,19 @@ if AGENTSMITH_SRC.exists():
     print(f"[*] Copying .agentsmith configuration...")
     shutil.copytree(AGENTSMITH_SRC, AGENTSMITH_DEST)
 
-# 6. Copy Launchers if exist
+# 6. Copy Brand Logo Resources (docs/images/)
+IMAGES_SRC = ROOT_DIR / "docs" / "images"
+RESOURCES_DEST = DIST_DIR / "resources"
+
+if IMAGES_SRC.exists():
+    print(f"[*] Copying brand logo resources from {IMAGES_SRC} to {RESOURCES_DEST}...")
+    RESOURCES_DEST.mkdir(parents=True, exist_ok=True)
+    for img_file in ["code.ico", "code.png", "logo.png", "code-icon.svg", "ico.png"]:
+        src_img = IMAGES_SRC / img_file
+        if src_img.exists():
+            shutil.copy2(src_img, RESOURCES_DEST / img_file)
+
+# 7. Copy Launchers if exist
 for launcher in ["agentsmith.exe", "agentsmith.vbs"]:
     src_file = ROOT_DIR / launcher
     if src_file.exists():
@@ -100,11 +129,11 @@ if %errorlevel% equ 0 (
 :: 2. Launch Desktop Client Binary
 echo [*] Launching Desktop IDE Client...
 if exist "agentsmith.exe" (
-    start "" "agentsmith.exe"
+    start "" "agentsmith.exe" --new-window "%~dp0"
 ) else if exist "app\\agentsmith_app.exe" (
-    start "" "app\\agentsmith_app.exe"
+    start "" "app\\agentsmith_app.exe" --new-window "%~dp0"
 ) else (
-    start "" "app\\Code - OSS.exe"
+    start "" "app\\Code - OSS.exe" --new-window "%~dp0"
 )
 
 echo [ok] Agent Smith Desktop Client Launch Process Completed.

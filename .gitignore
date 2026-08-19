@@ -17,8 +17,15 @@ build/out/
 build/dist/
 build/headers/
 build/node/
+VSCode-win32-x64/
 *.zip
 *.log
+
+# Local Databases & Agent Memory
+.agentsmith/
+coding-agent/.agentsmith/
+*.db
+*.sqlite
 
 # Secret keys
 .env

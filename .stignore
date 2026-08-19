@@ -54,6 +54,20 @@ coverage/
 *.tgz
 *.7z
 
+# VSCode Client Build & Temporary Artifacts
+vscode/.build/
+vscode/out/
+vscode/out-build/
+vscode/node_modules/
+vscode/cli/target/
+vscode/cli/openssl/
+vscode/extensions/**/dist/
+vscode/extensions/**/out/
+vscode/.vscode-test/
+
+# Backup & Temporary Folders
+_backup_untracked*/
+
 # ==========================================
 # 5. Environment Secrets & Logs
 # ==========================================
@@ -61,3 +75,8 @@ coverage/
 .env.local
 *.key
 *.log
+
+# Agent Smith Local Persistence Database
+# Only allow configuration file, ignore local qdrant database storage
+!.agentsmith/mem0_config.json
+.agentsmith/

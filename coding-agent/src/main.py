@@ -14,12 +14,15 @@ if str(src_dir.parent) not in sys.path:
     sys.path.insert(0, str(src_dir.parent))
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 import random
 import time
+import os
 import smtplib
 from email.mime.text import MIMEText
 
@@ -50,17 +53,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+MEDIA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "extension", "agentsmith-chat", "media")
+if os.path.exists(MEDIA_DIR):
+    app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+
+@app.get("/chat", response_class=HTMLResponse)
+def get_chat_page():
+    html_path = os.path.join(MEDIA_DIR, "chat.html")
+    with open(html_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    content = content.replace("${styleUri}", "/media/chat.css")
+    content = content.replace("${scriptUri}", "/media/chat.js")
+    return HTMLResponse(content=content)
+
+from db.session_manager import SessionManager
+
 # 백엔드 핵심 서비스 인스턴스 초기화
 llm_adapter = LLMAdapter(provider="desktop")
 vibe_engine = VibeEngine(llm_adapter)
 mcp_router = MCPRouter(port=3000)
+session_manager = SessionManager()
 
 # Request Models
 class VibeRequest(BaseModel):
     intent: str
     target_file: Optional[str] = "auth_service.py"
     provider: Optional[str] = "desktop"
-    model_id: Optional[str] = "qwen/qwen-2.5-coder-32b-instruct"
+    model_id: Optional[str] = "google/gemini-2.0-flash"
+    mode: Optional[str] = "planning"
+    session_id: Optional[str] = None
+
+class CreateSessionRequest(BaseModel):
+    title: Optional[str] = "새 세션"
+    model_id: Optional[str] = "google/gemini-2.0-flash"
+    mode: Optional[str] = "planning"
+
+class DiffActionRequest(BaseModel):
+    diff_id: Optional[int] = None
+    file_path: str
+    content: str
+    session_id: Optional[str] = None
 
 class ProviderSwitchRequest(BaseModel):
     provider: str
@@ -82,10 +114,142 @@ class AudioTranscribeRequest(BaseModel):
 def read_root():
     return {
         "status": "online",
-        "service": "Antigravity VibeForge Enterprise Backend Server",
+        "service": "Agent Smith Enterprise Backend Server",
         "mcp_gateway_port": 3000,
         "docs_url": "http://localhost:5000/docs"
     }
+
+# ==========================================
+# 📋 Session & Multi-Tenancy APIs
+# ==========================================
+@app.get("/api/sessions")
+def list_sessions():
+    """
+    저장된 대화 세션 히스토리 목록 조회
+    """
+    return {"sessions": session_manager.list_sessions()}
+
+@app.post("/api/sessions/new")
+def create_new_session(req: CreateSessionRequest):
+    """
+    신규 UUID 대화 세션 생성
+    """
+    return session_manager.create_session(req.title or "새 세션", req.model_id or "google/gemini-2.0-flash", req.mode or "planning")
+
+@app.get("/api/sessions/{session_id}")
+def get_session_history(session_id: str):
+    """
+    특정 세션의 대화, 아티팩트 및 Diff 복원
+    """
+    data = session_manager.get_session(session_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="세션을 찾을 수 없습니다.")
+    return data
+
+@app.delete("/api/sessions/{session_id}")
+def delete_session(session_id: str):
+    """
+    세션 삭제
+    """
+    session_manager.delete_session(session_id)
+    return {"status": "success", "message": "세션이 성공적으로 삭제되었습니다."}
+
+# ==========================================
+# 📝 Live Multi-File Diff & Rollback APIs
+# ==========================================
+@app.post("/api/diff/apply")
+def apply_diff_change(req: DiffActionRequest):
+    """
+    Diff 변경 사항 수락 (Accept) -> 파일 반영
+    """
+    if req.diff_id:
+        session_manager.update_diff_status(req.diff_id, "accepted")
+    return {"status": "success", "file_path": req.file_path, "action": "accepted"}
+
+@app.post("/api/diff/rollback")
+def rollback_diff_change(req: DiffActionRequest):
+    """
+    Diff 변경 사항 거절 및 롤백 (Reject/Rollback) -> 원본 복원
+    """
+    if req.diff_id:
+        session_manager.update_diff_status(req.diff_id, "rolled_back")
+    return {"status": "success", "file_path": req.file_path, "action": "rolled_back"}
+
+# ==========================================
+# 🧠 Mem0 Long-Term Memory APIs
+# ==========================================
+class MemoryAddRequest(BaseModel):
+    category: str
+    key: str
+    value: str
+
+@app.get("/api/mem0/profile")
+def get_mem0_profile():
+    """
+    Mem0 장기 기억 프로필 목록 반환
+    """
+    return {
+        "status": "success",
+        "memories": vibe_engine.mem0.list_memories(),
+        "prompt_context": vibe_engine.mem0.get_system_prompt_context()
+    }
+
+@app.post("/api/mem0/add")
+def add_mem0_memory(req: MemoryAddRequest):
+    """
+    신규 기억/규칙 추가
+    """
+    mem_id = vibe_engine.mem0.add_memory(req.category, req.key, req.value)
+    return {"status": "success", "memory_id": mem_id}
+
+@app.delete("/api/mem0/delete/{memory_id}")
+def delete_mem0_memory(memory_id: int):
+    """
+    기억 항목 삭제
+    """
+    vibe_engine.mem0.delete_memory(memory_id)
+    return {"status": "success"}
+
+# ==========================================
+# 🕸️ Graphify AST Knowledge Graph APIs
+# ==========================================
+class RagQueryRequest(BaseModel):
+    query: str
+
+@app.get("/api/graphify/stats")
+def get_graphify_stats():
+    """
+    워크스페이스 AST 지식 그래프 통계 및 노드 반환
+    """
+    return vibe_engine.graphify.scan_ast_graph()
+
+@app.post("/api/graphify/rag")
+def query_graphify_rag(req: RagQueryRequest):
+    """
+    하이브리드 AST RAG 연관 심볼 검색
+    """
+    return vibe_engine.graphify.query_hybrid_rag(req.query)
+
+# ==========================================
+# 🧩 gstack Personas & Workflows APIs
+# ==========================================
+@app.get("/api/plugins/gstack")
+def list_gstack_customizations():
+    """
+    gstack 내장 페르소나, 워크플로우 및 .agents/ 커스텀 확장 목록 반환
+    """
+    return vibe_engine.gstack_loader.list_all_customizations()
+
+class SastScanRequest(BaseModel):
+    code: str
+    filename: Optional[str] = "source.py"
+
+@app.post("/api/guardrails/check")
+def check_guardrails(req: SastScanRequest):
+    """
+    SAST 보안 취약점 정적 검사
+    """
+    return vibe_engine.cortex_guard.scan_sast_security(req.code, req.filename or "source.py")
 
 @app.get("/api/workspace/status")
 def get_workspace_status():
@@ -131,7 +295,7 @@ def set_openrouter_key(req: OpenRouterKeyRequest):
 @app.post("/api/vibe/generate")
 async def generate_vibe_code(req: VibeRequest):
     """
-    Vibe 의도(Prompt)를 입력받아 자율 코드, Thinking, 샌드박스 셀프코렉션 결과 생성
+    Vibe 의도(Prompt)를 입력받아 자율 코드, Thinking, 아티팩트 메타데이터, 샌드박스 셀프코렉션 결과 생성
     """
     if not req.intent.strip():
         raise HTTPException(status_code=400, detail="Intent prompt cannot be empty")
@@ -141,7 +305,7 @@ async def generate_vibe_code(req: VibeRequest):
     if req.model_id:
         llm_adapter.set_model(req.model_id)
         
-    result = await vibe_engine.execute_vibe(req.intent, req.target_file, req.model_id)
+    result = await vibe_engine.execute_vibe(req.intent, req.target_file, req.model_id, req.mode or "planning")
     return result
 
 @app.post("/api/provider/switch")
