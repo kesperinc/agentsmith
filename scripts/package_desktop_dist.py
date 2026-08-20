@@ -250,6 +250,18 @@ if IMAGES_SRC.exists():
         if src_img.exists():
             shutil.copy2(src_img, RESOURCES_DEST / img_file)
 
+# 6.1 Copy Built-in Extension: extensions/agentsmith-chat
+EXTENSION_SRC = ROOT_DIR / "extensions" / "agentsmith-chat"
+EXTENSION_DEST1 = RESOURCES_APP_DEST / "extensions" / "agentsmith-chat"
+EXTENSION_DEST2 = APP_DEST / "resources" / "app" / "extensions" / "agentsmith-chat"
+
+if EXTENSION_SRC.exists():
+    print(f"[*] Copying built-in Agent Smith Studio extension ({EXTENSION_SRC})...")
+    shutil.copytree(EXTENSION_SRC, EXTENSION_DEST1, dirs_exist_ok=True)
+    if APP_DEST.exists():
+        shutil.copytree(EXTENSION_SRC, EXTENSION_DEST2, dirs_exist_ok=True)
+    print(f"[ok] Embedded Agent Smith Studio extension into production extensions directory.")
+
 # 7. Copy Launchers if exist
 for launcher in ["agentsmith.exe", "agentsmith.vbs"]:
     src_file = ROOT_DIR / launcher
