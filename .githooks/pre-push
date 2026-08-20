@@ -1,0 +1,22 @@
+#!/bin/sh
+# ============================================================
+# Agent Smith 브랜치 가드레일 - pre-push 훅
+# main/staging 브랜치 force-push 차단
+# ============================================================
+
+while read local_ref local_sha remote_ref remote_sha; do
+  # main 브랜치 force-push 차단
+  if echo "$remote_ref" | grep -q "refs/heads/main"; then
+    BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+    if [ "$BRANCH" = "main" ]; then
+      echo ""
+      echo "❌ [GUARDRAIL] main 브랜치 직접 push는 허용되지 않습니다."
+      echo "   브랜치 전략: feature/* ➔ staging ➔ main"
+      echo "   현재 feature 브랜치에서 작업 후 머지 요청을 통해 반영하세요."
+      echo ""
+      exit 1
+    fi
+  fi
+done
+
+exit 0

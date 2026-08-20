@@ -1,0 +1,29 @@
+#!/bin/sh
+# ============================================================
+# Agent Smith 브랜치 가드레일 - commit-msg 훅
+# main 브랜치 직접 커밋 차단
+# ============================================================
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+# main 브랜치에 직접 커밋 차단
+if [ "$BRANCH" = "main" ]; then
+  echo ""
+  echo "❌ [GUARDRAIL] main 브랜치에 직접 커밋할 수 없습니다."
+  echo "   브랜치 전략: feature/* ➔ staging ➔ main"
+  echo "   새 feature 브랜치를 생성하세요: git checkout -b feature/<작업명>"
+  echo ""
+  exit 1
+fi
+
+# staging 브랜치에 직접 커밋 차단
+if [ "$BRANCH" = "staging" ]; then
+  echo ""
+  echo "❌ [GUARDRAIL] staging 브랜치에 직접 커밋할 수 없습니다."
+  echo "   staging 브랜치는 feature/* 브랜치로부터 병합(merge)만 허용됩니다."
+  echo "   새 feature 브랜치를 생성하세요: git checkout -b feature/<작업명>"
+  echo ""
+  exit 1
+fi
+
+exit 0
