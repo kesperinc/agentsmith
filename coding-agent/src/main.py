@@ -68,17 +68,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MEDIA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "extension", "agentsmith-chat", "media")
-if os.path.exists(MEDIA_DIR):
-    app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+MEDIA_DIRS = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "extensions", "agentsmith-chat", "media"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "extension", "agentsmith-chat", "media"),
+]
+MEDIA_DIR = None
+for md in MEDIA_DIRS:
+    if os.path.exists(md):
+        MEDIA_DIR = md
+        app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+        break
 
 @app.get("/chat", response_class=HTMLResponse)
 def get_chat_page():
-    html_path = os.path.join(MEDIA_DIR, "chat.html")
+    if not MEDIA_DIR:
+        return HTMLResponse("<h3>Media Directory Not Found</h3>")
+    html_path = os.path.join(MEDIA_DIR, "index.html")
+    if not os.path.exists(html_path):
+        html_path = os.path.join(MEDIA_DIR, "chat.html")
     with open(html_path, "r", encoding="utf-8") as f:
         content = f.read()
-    content = content.replace("${styleUri}", "/media/chat.css")
-    content = content.replace("${scriptUri}", "/media/chat.js")
     return HTMLResponse(content=content)
 
 from db.session_manager import SessionManager
