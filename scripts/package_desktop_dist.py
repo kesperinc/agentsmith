@@ -44,75 +44,55 @@ if ELECTRON_SRC.exists():
 
     print(f"[*] Constructing Pure Unpacked Editor App Structure at {RESOURCES_APP_DEST}...")
 
-    # Copy Compiled out/ Directory
-    if (VSCODE_DIR / "out").exists():
-        print(f"[*] Copying compiled out/ directory...")
+    # Preserve Compiled Production out/ Directory from VSCode-win32-x64
+    bundled_workbench = RESOURCES_APP_DEST / "out" / "vs" / "workbench" / "workbench.desktop.main.js"
+    if bundled_workbench.exists() and bundled_workbench.stat().st_size > 1024 * 1024:
+        print(f"[*] Preserving production bundled out/ directory ({bundled_workbench.stat().st_size / (1024*1024):.2f} MB)...")
+    elif (VSCODE_DIR / "out").exists():
+        print(f"[*] Copying compiled out/ directory from vscode/out...")
         shutil.copytree(VSCODE_DIR / "out", RESOURCES_APP_DEST / "out", dirs_exist_ok=True)
-
-    # Copy package.json & product.json
-    for json_file in ["package.json", "product.json"]:
-        if (VSCODE_DIR / json_file).exists():
-            shutil.copy2(VSCODE_DIR / json_file, RESOURCES_APP_DEST / json_file)
 
     # Copy extensions/ Directory
     if (VSCODE_DIR / "extensions").exists():
         print(f"[*] Copying extensions/ directory...")
         shutil.copytree(VSCODE_DIR / "extensions", RESOURCES_APP_DEST / "extensions", dirs_exist_ok=True)
 
-    # Remove node_modules.asar if present to force direct unpacked node_modules loading
+    # Set up 28-byte empty dummy node_modules.asar to allow Electron to fall through to unpacked node_modules
+    DUMMY_ASAR_BYTES = b'\x04\x00\x00\x00\x14\x00\x00\x00\x10\x00\x00\x00\x0c\x00\x00\x00{"files":{}}'
     ASAR_FILE = RESOURCES_APP_DEST / "node_modules.asar"
-    if ASAR_FILE.exists():
-        print(f"[*] Removing node_modules.asar to enforce direct unpacked node_modules loading...")
-        try:
-            ASAR_FILE.unlink()
-        except Exception as e:
-            print(f"[!] Note on removing asar: {e}")
+    with open(ASAR_FILE, "wb") as f:
+        f.write(DUMMY_ASAR_BYTES)
+    print(f"[*] Created empty dummy node_modules.asar (28 bytes) for direct unpacked module fallback...")
 
-    # Copy node_modules/ Directory for Direct Unpacked Native Loading
-    if (VSCODE_DIR / "node_modules").exists():
-        print(f"[*] Copying full node_modules/ directory for native module compatibility...")
-        shutil.copytree(VSCODE_DIR / "node_modules", RESOURCES_APP_DEST / "node_modules", dirs_exist_ok=True)
-
-    # Overlay Precompiled Electron 27 (NODE_MODULE_VERSION 118) Native Modules from Antigravity IDE
+    # Copy full working unpacked node_modules from Antigravity IDE
     AGY_MODULE_SRC = Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "node_modules"
-    NATIVE_MODULE_NAMES = [
-        "@vscode/policy-watcher",
-        "@vscode/spdlog",
-        "@vscode/sqlite3",
-        "@vscode/windows-process-tree",
-        "@vscode/windows-registry",
-        "@vscode/windows-mutex",
-        "@vscode/windows-ca-certs",
-        "@vscode/deviceid",
-        "native-keymap",
-        "native-watchdog",
-        "native-is-elevated",
-        "kerberos",
-        "node-pty",
-        "windows-foreground-love"
-    ]
     if AGY_MODULE_SRC.exists():
-        print(f"[*] Overlaying Electron 27 (NODE_MODULE_VERSION 118) C++ native modules from {AGY_MODULE_SRC}...")
-        for mod in NATIVE_MODULE_NAMES:
-            src_mod = AGY_MODULE_SRC / Path(mod)
-            dest_mod = RESOURCES_APP_DEST / "node_modules" / Path(mod)
-            if src_mod.exists():
-                print(f"    -> Overwriting {mod} with Electron 27 ABI version 118...")
-                shutil.copytree(src_mod, dest_mod, dirs_exist_ok=True)
+        print(f"[*] Copying full working unpacked node_modules from {AGY_MODULE_SRC}...")
+        shutil.copytree(AGY_MODULE_SRC, RESOURCES_APP_DEST / "node_modules", dirs_exist_ok=True)
+    elif (VSCODE_DIR / "node_modules").exists():
+        print(f"[*] Copying full node_modules/ directory from vscode/node_modules...")
+        shutil.copytree(VSCODE_DIR / "node_modules", RESOURCES_APP_DEST / "node_modules", dirs_exist_ok=True)
 
     # Ensure conpty.node in Release directory
     PTY_UNPACKED_DEST = RESOURCES_APP_DEST / "node_modules" / "node-pty" / "build" / "Release"
     PTY_UNPACKED_DEST.mkdir(parents=True, exist_ok=True)
     
     PTY_SOURCES = [
-        ROOT_DIR / "vscode" / "node_modules" / "node-pty" / "build" / "Release",
-        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "node_modules" / "node-pty" / "build" / "Release"
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "node_modules" / "node-pty" / "build" / "Release",
+        ROOT_DIR / "vscode" / "node_modules" / "node-pty" / "build" / "Release"
     ]
     for pty_src in PTY_SOURCES:
         if pty_src.exists() and (pty_src / "conpty.node").exists():
             print(f"[*] Ensuring terminal conpty.node binaries from {pty_src}...")
             shutil.copytree(pty_src, PTY_UNPACKED_DEST, dirs_exist_ok=True)
             break
+
+    # Create extensionless alias for all .node native binary files to prevent CJS resolution issues
+    print(f"[*] Creating extensionless aliases for C++ native .node binaries...")
+    for node_binary in (RESOURCES_APP_DEST / "node_modules").rglob("*.node"):
+        alias_path = node_binary.with_name(node_binary.stem)
+        if not alias_path.exists():
+            shutil.copy2(node_binary, alias_path)
 else:
     print(f"[!] Warning: {ELECTRON_SRC} not found. Please build electron first.")
 

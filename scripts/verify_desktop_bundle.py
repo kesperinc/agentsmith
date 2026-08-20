@@ -148,16 +148,21 @@ def check_dist_artifacts():
     # 2. Main Electron Entry & out/ directory
     resources_app = DIST_DIR / "app" / "resources" / "app"
     out_main = resources_app / "out" / "main.js"
-    if out_main.exists():
-        print(f" [✓] 메인 렌더러 모듈 확인: {out_main} ({out_main.stat().st_size} bytes)")
+    workbench_main = resources_app / "out" / "vs" / "workbench" / "workbench.desktop.main.js"
+    if out_main.exists() and workbench_main.exists() and workbench_main.stat().st_size > 1024 * 1024:
+        print(f" [✓] 번들링된 UI 메인 모듈 확인: {workbench_main.name} ({workbench_main.stat().st_size / (1024*1024):.2f} MB)")
+    elif out_main.exists():
+        print(f" [!] 경고: out/main.js 존재하나 workbench.desktop.main.js 번들 크기가 비정상적으로 작습니다.")
     else:
         print(f" [✗] 핵심 모듈 누락: {out_main} (Black Screen / Cannot find module 원인)")
         success = False
 
-    # 3. node_modules.asar Removal Check
+    # 3. node_modules.asar Dummy / Removal Check
     asar_path = resources_app / "node_modules.asar"
-    if asar_path.exists():
-        print(f" [!] 경고: node_modules.asar 파일이 존재합니다! (Unpacked 모듈과의 충돌 방지를 위해 삭제 권장)")
+    if asar_path.exists() and asar_path.stat().st_size <= 100:
+        print(f" [✓] Unpacked Fallback용 더미 node_modules.asar 확인 ({asar_path.stat().st_size} bytes)")
+    elif asar_path.exists():
+        print(f" [!] 경고: 대용량 node_modules.asar 파일이 존재합니다! ({asar_path.stat().st_size / (1024*1024):.2f} MB)")
     else:
         print(f" [✓] Pure Unpacked 모듈 구조 확인 (node_modules.asar 미존재)")
 

@@ -32,11 +32,18 @@
   - [x] 5대 계층 방어 아키텍처 가이드 수립 ([2026-08-20_long_path_and_deep_folder_mitigation_guide.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_long_path_and_deep_folder_mitigation_guide.md))
   - [x] C# 인스톨러에 `LongPathsEnabled` 레지스트리 자동 점검 및 `\\?\` 접두사, `C:\AgentSmith` 단축 경로 추천 다이얼로그 탑재
   - [x] 긴 경로 대응 상세명세서 작성 ([2026-08-20_long_path_and_installer_mitigation_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_long_path_and_installer_mitigation_spec.md))
+- [x] **데스크톱 검은 화면(Black Screen) 3대 결함 근본 원인 규명 및 패키징 스크립트 영구 개편**:
+  - [x] [원인 1] 프로덕션 번들(29.5MB)을 7KB 스텁으로 덮어쓰던 결함 제거 및 `VSCode-win32-x64` 번들 보존 로직 추가
+  - [x] [원인 2] 28바이트 더미 asar(`{"files":{}}`)를 자동 주입하여 asar 후킹 우회 및 Unpacked 모듈 자동 Fallback 구현
+  - [x] [원인 3] Antigravity IDE의 C++ 네이티브 모듈 14종 및 의존성 일괄 복사 표준화
+  - [x] [검증 도구] `verify_desktop_bundle.py` 번들 크기 정밀 검사 및 더미 asar 감지 로직 탑재
+  - [x] [명세서] [`coding-agent/docs/specs/2026-08-20_desktop_blackscreen_root_cause_and_fix_spec.md`](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/specs/2026-08-20_desktop_blackscreen_root_cause_and_fix_spec.md)
+  - [x] [핸드오버] [`coding-agent/docs/2026-08-20_desktop_blackscreen_fix_and_handover_report.md`](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/2026-08-20_desktop_blackscreen_fix_and_handover_report.md) & [`docs/2026-08-20_handover.md`](file:///c:/dev/antigravity-workspace/agentsmith/docs/2026-08-20_handover.md)
 - [x] **C# Native 1-Click 단일 실행 설치 바이너리 컴파일 완료**:
-  - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (564.21 MB) 구축 완료
+  - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (580.43 MB) 구축 완료
 - [x] **통합 인수인계 보고서 작성**:
-  - [x] [`coding-agent/docs/2026-08-20_project_handover_report.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_project_handover_report.md)
-  - [x] [`coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md)
+  - [x] [`coding-agent/docs/2026-08-20_project_handover_report.md`](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/2026-08-20_project_handover_report.md)
+  - [x] [`coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md`](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md)
 
 ---
 
