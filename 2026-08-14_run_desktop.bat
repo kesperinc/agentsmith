@@ -1,7 +1,18 @@
 @echo off
 chcp 65001 > nul
+if not defined USERPROFILE (
+    if defined HOMEDRIVE if defined HOMEPATH (
+        set "USERPROFILE=%HOMEDRIVE%%HOMEPATH%"
+    ) else (
+        set "USERPROFILE=%SystemDrive%\Users\%USERNAME%"
+    )
+)
+if not defined APPDATA set "APPDATA=%USERPROFILE%\AppData\Roaming"
+if not defined LOCALAPPDATA set "LOCALAPPDATA=%USERPROFILE%\AppData\Local"
+
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
+set AGENTSMITH_BACKEND_PORT=5000
 
 echo ===================================================
 echo [Agent Smith] Starting Desktop Version...

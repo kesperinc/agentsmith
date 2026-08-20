@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
 """
-Native Windows Setup Installer Builder for Agent Smith IDE
-Generates a standalone single-executable setup file (AgentSmith_Desktop_Setup_v1.0.0.exe)
-incorporating payload compression, C# compilation, brand logo icon, process auto-killer,
-and safe multi-retry / unlock extraction routines.
+Agent Smith Enterprise Desktop Single Setup Executable Compiler
+Compiles a standalone C# Windows installer with embedded zip payload,
+progress bar GUI, automatic uninstallation of older versions, and shortcut creation.
 """
 
 import os
@@ -10,22 +10,26 @@ import sys
 import shutil
 import zipfile
 import subprocess
+from pathlib import Path
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DIST_DIR = os.path.join(ROOT_DIR, "dist")
-SOURCE_PAYLOAD_DIR = os.path.join(DIST_DIR, "agentsmith-desktop-v1.0.0")
-SETUP_EXE_PATH = os.path.join(DIST_DIR, "AgentSmith_Desktop_Setup_v1.0.0.exe")
-PAYLOAD_ZIP = os.path.join(DIST_DIR, "payload.zip")
-CS_INSTALLER_SRC = os.path.join(DIST_DIR, "Installer.cs")
-BRAND_ICON = os.path.join(ROOT_DIR, "docs", "images", "code.ico")
+# Force UTF-8 Output
+sys.stdout.reconfigure(encoding='utf-8')
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DIST_DIR = ROOT_DIR / "dist"
+SOURCE_PAYLOAD_DIR = DIST_DIR / "agentsmith-desktop-v1.0.0"
+PAYLOAD_ZIP = DIST_DIR / "temp_payload.zip"
+CS_INSTALLER_SRC = DIST_DIR / "Installer.cs"
+SETUP_EXE_PATH = DIST_DIR / "AgentSmith_Desktop_Setup_v1.0.0.exe"
+BRAND_ICON = ROOT_DIR / "docs" / "images" / "code.ico"
 
 print("=" * 50)
-print("[Agent Smith] Building Native Windows Setup Executable...")
+print("[Agent Smith] Building Native Windows Setup Executable with Progress Bar...")
 print(f"Source Directory: {SOURCE_PAYLOAD_DIR}")
 print(f"Output Executable: {SETUP_EXE_PATH}")
 print("=" * 50)
 
-# 1. Verify Source Payload Directory
+# 1. Verify Payload Directory
 if not os.path.exists(SOURCE_PAYLOAD_DIR):
     print(f"[!] Source payload directory not found: {SOURCE_PAYLOAD_DIR}")
     print("[*] Running scripts/package_desktop_dist.py first...")
@@ -51,17 +55,94 @@ with zipfile.ZipFile(PAYLOAD_ZIP, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as
 
 print(f"[ok] Payload zip created ({os.path.getsize(PAYLOAD_ZIP) / (1024*1024):.2f} MB)")
 
-# 3. Generate C# Installer Source Code: Installer.cs
+# 3. Generate C# Installer Source Code with Windows Forms Progress Bar: Installer.cs
 CS_SOURCE = r'''using System;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Threading;
 
 namespace AgentSmithInstaller
 {
+    public class InstallProgressForm : Form
+    {
+        public ProgressBar ProgressBar;
+        public Label StatusLabel;
+        public Label FileLabel;
+        public Label TitleLabel;
+
+        public InstallProgressForm()
+        {
+            this.Text = "Agent Smith Enterprise Desktop IDE 설치";
+            this.Size = new Size(540, 240);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(245, 246, 250);
+            this.Font = new Font("Malgun Gothic", 9F, FontStyle.Regular);
+
+            TitleLabel = new Label();
+            TitleLabel.Text = "Agent Smith Desktop IDE를 설치하는 중입니다...";
+            TitleLabel.Font = new Font("Malgun Gothic", 11F, FontStyle.Bold);
+            TitleLabel.ForeColor = Color.FromArgb(20, 20, 30);
+            TitleLabel.Location = new Point(25, 20);
+            TitleLabel.AutoSize = true;
+            this.Controls.Add(TitleLabel);
+
+            StatusLabel = new Label();
+            StatusLabel.Text = "설치 준비 중...";
+            StatusLabel.Font = new Font("Malgun Gothic", 9.5F, FontStyle.Regular);
+            StatusLabel.ForeColor = Color.FromArgb(60, 60, 80);
+            StatusLabel.Location = new Point(25, 60);
+            StatusLabel.AutoSize = true;
+            this.Controls.Add(StatusLabel);
+
+            ProgressBar = new ProgressBar();
+            ProgressBar.Location = new Point(25, 90);
+            ProgressBar.Size = new Size(475, 26);
+            ProgressBar.Minimum = 0;
+            ProgressBar.Maximum = 100;
+            ProgressBar.Value = 0;
+            ProgressBar.Style = ProgressBarStyle.Continuous;
+            this.Controls.Add(ProgressBar);
+
+            FileLabel = new Label();
+            FileLabel.Text = "";
+            FileLabel.Font = new Font("Malgun Gothic", 8F, FontStyle.Regular);
+            FileLabel.ForeColor = Color.FromArgb(120, 120, 140);
+            FileLabel.Location = new Point(25, 125);
+            FileLabel.Size = new Size(475, 40);
+            FileLabel.AutoEllipsis = true;
+            this.Controls.Add(FileLabel);
+        }
+
+        public void UpdateProgress(int percent, string status, string currentFile)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<int, string, string>(UpdateProgress), percent, status, currentFile);
+                return;
+            }
+            if (percent >= 0 && percent <= 100)
+            {
+                this.ProgressBar.Value = percent;
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                this.StatusLabel.Text = status;
+            }
+            if (currentFile != null)
+            {
+                this.FileLabel.Text = currentFile;
+            }
+            this.Refresh();
+        }
+    }
+
     class Program
     {
         [STAThread]
@@ -69,7 +150,6 @@ namespace AgentSmithInstaller
         {
             try
             {
-                // Long Path OS 레지스트리 지원 점검 및 활성화 시도
                 EnsureLongPathSupport();
 
                 string defaultTarget = Path.Combine(
@@ -80,7 +160,6 @@ namespace AgentSmithInstaller
 
                 string targetDir = defaultTarget;
 
-                // 경로가 너무 길거나 사용자명이 장문인 경우 단축 경로(C:\AgentSmith) 제안
                 if (defaultTarget.Length > 55)
                 {
                     DialogResult pathChoice = MessageBox.Show(
@@ -147,12 +226,21 @@ namespace AgentSmithInstaller
                     if (result != DialogResult.Yes) return;
                 }
 
+                // 모던 설치 진행상황 다이얼로그 생성 및 표시
+                InstallProgressForm progressForm = new InstallProgressForm();
+                progressForm.Show();
+                progressForm.UpdateProgress(5, "실행 중인 프로세스 정리 중...", "");
+                Application.DoEvents();
+
                 // 1단계: 실행 중인 잠금 프로세스 전면 강제 종료
                 KillLockedProcesses(targetDir);
 
                 // 2단계: 클린 설치 시 기존 디렉터리 안전 삭제
                 if (cleanInstall)
                 {
+                    progressForm.UpdateProgress(10, "기존 설치 디렉터리 정리 중...", targetDir);
+                    Application.DoEvents();
+
                     bool deleteSuccess = false;
                     for (int attempt = 0; attempt < 3; attempt++)
                     {
@@ -180,7 +268,11 @@ namespace AgentSmithInstaller
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Warning
                         );
-                        if (retryDel != DialogResult.Yes) return;
+                        if (retryDel != DialogResult.Yes)
+                        {
+                            progressForm.Close();
+                            return;
+                        }
                     }
                 }
 
@@ -190,6 +282,9 @@ namespace AgentSmithInstaller
                 }
 
                 // 3단계: 임베디드 리소스 payload.zip 추출
+                progressForm.UpdateProgress(15, "설치 패키지 데이터 로드 중...", "payload.zip 추출 중...");
+                Application.DoEvents();
+
                 string tempZipPath = Path.Combine(Path.GetTempPath(), "agentsmith_install_payload_" + Guid.NewGuid().ToString("N") + ".zip");
                 
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -197,6 +292,7 @@ namespace AgentSmithInstaller
                 {
                     if (stream == null)
                     {
+                        progressForm.Close();
                         MessageBox.Show("설치 리소스를 로드할 수 없습니다.", "설치 오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
@@ -206,15 +302,29 @@ namespace AgentSmithInstaller
                     }
                 }
 
-                // 4단계: Safe Multi-Retry / Rename 오버라이트 추출
+                // 4단계: Safe Multi-Retry / Rename 오버라이트 추출 및 실시간 프로그레스 바 업데이트
                 using (ZipArchive archive = ZipFile.OpenRead(tempZipPath))
                 {
+                    int totalEntries = archive.Entries.Count;
+                    int currentEntry = 0;
+
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
+                        currentEntry++;
+                        int percent = 20 + (int)((double)currentEntry / totalEntries * 70); // 20% ~ 90%
+                        
                         string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
                         if (!destinationPath.StartsWith(Path.GetFullPath(targetDir), StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
+                        }
+
+                        if (currentEntry % 15 == 0 || currentEntry == totalEntries)
+                        {
+                            string displayFile = entry.FullName;
+                            if (displayFile.Length > 55) displayFile = "..." + displayFile.Substring(displayFile.Length - 52);
+                            progressForm.UpdateProgress(percent, string.Format("파일 설치 중: {0}% ({1} / {2})", percent, currentEntry, totalEntries), displayFile);
+                            Application.DoEvents();
                         }
 
                         if (string.IsNullOrEmpty(entry.Name))
@@ -233,11 +343,15 @@ namespace AgentSmithInstaller
                     try { File.Delete(tempZipPath); } catch { }
                 }
 
-                // 5단계: 바탕화면 및 시작메뉴 바로가기 생성 (PowerShell 스크립트)
+                // 5단계: 바탕화면 및 시작메뉴 바로가기 생성
+                progressForm.UpdateProgress(92, "바탕화면 및 시작 메뉴 바로가기 구성 중...", "Agent Smith Desktop IDE.lnk");
+                Application.DoEvents();
+
                 string psScript = "$TargetDir = '" + targetDir.Replace(@"\", @"\\") + "'; " +
                     "$ExePath = Join-Path $TargetDir 'run_agentsmith_desktop.bat'; " +
                     "$IconPath = Join-Path $TargetDir 'resources\\code.ico'; " +
                     "if (!(Test-Path $IconPath)) { $IconPath = Join-Path $TargetDir 'app\\resources\\win32\\code.ico'; } " +
+                    "if (!(Test-Path $IconPath)) { $IconPath = Join-Path $TargetDir 'app\\AgentSmith.exe'; } " +
                     "if (!(Test-Path $IconPath)) { $IconPath = Join-Path $TargetDir 'app\\Code - OSS.exe'; } " +
                     "$Wsh = New-Object -ComObject WScript.Shell; " +
                     "$Desktop = [System.Environment]::GetFolderPath('Desktop'); " +
@@ -263,28 +377,68 @@ namespace AgentSmithInstaller
                 psi.UseShellExecute = false;
                 Process.Start(psi).WaitForExit();
 
-                DialogResult launchResult = MessageBox.Show(
-                    "Agent Smith Enterprise Desktop IDE 설치가 성공적으로 완료되었습니다!\n\n바탕화면 및 시작 메뉴에 바로가기가 생성되었습니다.\n지금 Agent Smith를 실행하시겠습니까?",
-                    "설치 완료",
+                // 6단계: 환경변수 가드레일 주입
+                progressForm.UpdateProgress(98, "환경 변수 설정 및 보안 가드레일 검증 중...", "USERPROFILE / APPDATA / UTF-8");
+                Application.DoEvents();
+
+                try
+                {
+                    string curUp = Environment.GetEnvironmentVariable("USERPROFILE", EnvironmentVariableTarget.User);
+                    if (string.IsNullOrEmpty(curUp))
+                    {
+                        string safeUp = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        if (!string.IsNullOrEmpty(safeUp))
+                        {
+                            Environment.SetEnvironmentVariable("USERPROFILE", safeUp, EnvironmentVariableTarget.User);
+                        }
+                    }
+                    Environment.SetEnvironmentVariable("PYTHONUTF8", "1", EnvironmentVariableTarget.User);
+                    Environment.SetEnvironmentVariable("PYTHONIOENCODING", "utf-8", EnvironmentVariableTarget.User);
+                }
+                catch { }
+
+                progressForm.UpdateProgress(100, "설치가 성공적으로 완료되었습니다!", "완료");
+                Application.DoEvents();
+                Thread.Sleep(500);
+                progressForm.Close();
+
+                // 7단계: 완료 안내 및 자동 실행 질의
+                DialogResult launchChoice = MessageBox.Show(
+                    "Agent Smith Enterprise Desktop IDE 설치가 성공적으로 완료되었습니다!\n\n" +
+                    "설치 위치: " + targetDir + "\n" +
+                    "바로가기: 바탕화면 및 시작 메뉴에 등록됨\n\n" +
+                    "지금 바로 Agent Smith Desktop IDE를 실행하시겠습니까?",
+                    "설치 완료 - Agent Smith",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Information
                 );
 
-                if (launchResult == DialogResult.Yes)
+                if (launchChoice == DialogResult.Yes)
                 {
-                    string launcherPath = Path.Combine(targetDir, "run_agentsmith_desktop.bat");
-                    if (File.Exists(launcherPath))
+                    string batPath = Path.Combine(targetDir, "run_agentsmith_desktop.bat");
+                    if (File.Exists(batPath))
                     {
-                        ProcessStartInfo runPsi = new ProcessStartInfo("cmd.exe", "/c \"" + launcherPath + "\"");
+                        ProcessStartInfo runPsi = new ProcessStartInfo("cmd.exe", "/c \"" + batPath + "\"");
                         runPsi.WorkingDirectory = targetDir;
-                        runPsi.UseShellExecute = true;
+                        runPsi.UseShellExecute = false;
+                        
+                        string userProf = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        if (!string.IsNullOrEmpty(userProf))
+                        {
+                            runPsi.EnvironmentVariables["USERPROFILE"] = userProf;
+                            runPsi.EnvironmentVariables["APPDATA"] = Path.Combine(userProf, "AppData", "Roaming");
+                            runPsi.EnvironmentVariables["LOCALAPPDATA"] = Path.Combine(userProf, "AppData", "Local");
+                        }
+                        runPsi.EnvironmentVariables["PYTHONUTF8"] = "1";
+                        runPsi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
+                        
                         Process.Start(runPsi);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("설치 중 오류가 발생했습니다:\n\n" + ex.Message, "설치 오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("설치 중 치명적인 오류가 발생했습니다:\n\n" + ex.Message, "설치 실패", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -309,31 +463,9 @@ namespace AgentSmithInstaller
 
         private static void KillLockedProcesses(string targetDir)
         {
-            // 1. targetDir 하위에서 실행 중인 모든 프로세스 탐색 및 강제 종료
-            try
-            {
-                string normalizedTarget = Path.GetFullPath(targetDir).TrimEnd('\\', '/') + "\\";
-                foreach (Process p in Process.GetProcesses())
-                {
-                    try
-                    {
-                        string exePath = "";
-                        try { exePath = p.MainModule.FileName; } catch { }
-                        if (!string.IsNullOrEmpty(exePath) && exePath.StartsWith(normalizedTarget, StringComparison.OrdinalIgnoreCase))
-                        {
-                            p.Kill();
-                            p.WaitForExit(1500);
-                        }
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            // 2. 프로세스 이름 기반 종료 (Code - OSS, agentsmith_app, agentsmith_editor, electron 등)
             string[] procNames = new string[] { 
                 "Code - OSS", "agentsmith_app", "agentsmith_editor", "Code", "electron", 
-                "run_agentsmith_desktop", "agentsmith" 
+                "run_agentsmith_desktop", "agentsmith", "AgentSmith" 
             };
             foreach (var name in procNames)
             {
@@ -367,7 +499,7 @@ namespace AgentSmithInstaller
                     }
 
                     entry.ExtractToFile(destinationPath, true);
-                    return; // 성공
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -406,7 +538,7 @@ namespace AgentSmithInstaller
                             }
                             else if (res == DialogResult.Ignore)
                             {
-                                return; // 무시하고 다음 파일로 진행
+                                return;
                             }
                             else
                             {
@@ -422,16 +554,16 @@ namespace AgentSmithInstaller
 }
 '''
 
-print("[2/3] Created C# Installer source code.")
+print("[2/3] Created C# Installer source code with Real-Time Progress Bar GUI.")
 with open(CS_INSTALLER_SRC, 'w', encoding='utf-8') as f:
     f.write(CS_SOURCE)
 
 # 4. Locate C# Compiler (csc.exe)
 CSC_CANDIDATES = [
+    r"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\Roslyn\csc.exe",
+    r"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
     r"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe",
     r"C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe",
-    r"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
-    r"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Roslyn\csc.exe",
 ]
 
 csc_path = None
@@ -469,7 +601,7 @@ except Exception:
 
 setup_size_mb = os.path.getsize(SETUP_EXE_PATH) / (1024 * 1024)
 print("=" * 50)
-print("[SUCCESS] Native Setup Executable Built Successfully!")
+print("[SUCCESS] Native Setup Executable Built Successfully with Progress Bar!")
 print(f"Setup File: {SETUP_EXE_PATH}")
 print(f"File Size: {setup_size_mb:.2f} MB")
 print("=" * 50)

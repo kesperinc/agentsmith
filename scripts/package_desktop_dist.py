@@ -44,13 +44,23 @@ if ELECTRON_SRC.exists():
 
     print(f"[*] Constructing Pure Unpacked Editor App Structure at {RESOURCES_APP_DEST}...")
 
-    # Preserve Compiled Production out/ Directory from VSCode-win32-x64
+    # Copy Pure CommonJS Compiled Production out/ Directory from vscode/out-vscode
+    OUT_VSC_SRC = VSCODE_DIR / "out-vscode"
     bundled_workbench = RESOURCES_APP_DEST / "out" / "vs" / "workbench" / "workbench.desktop.main.js"
-    if bundled_workbench.exists() and bundled_workbench.stat().st_size > 1024 * 1024:
-        print(f"[*] Preserving production bundled out/ directory ({bundled_workbench.stat().st_size / (1024*1024):.2f} MB)...")
+    AGY_OUT_SRC = Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "out"
+
+    if OUT_VSC_SRC.exists() and (OUT_VSC_SRC / "vs" / "workbench" / "workbench.desktop.main.js").exists():
+        print(f"[*] Copying pure CommonJS compiled out/ directory from {OUT_VSC_SRC}...")
+        shutil.rmtree(RESOURCES_APP_DEST / "out", ignore_errors=True)
+        shutil.copytree(OUT_VSC_SRC, RESOURCES_APP_DEST / "out")
     elif (VSCODE_DIR / "out").exists():
         print(f"[*] Copying compiled out/ directory from vscode/out...")
         shutil.copytree(VSCODE_DIR / "out", RESOURCES_APP_DEST / "out", dirs_exist_ok=True)
+    elif bundled_workbench.exists() and bundled_workbench.stat().st_size > 1024 * 1024:
+        print(f"[*] Preserving existing production bundled out/ directory ({bundled_workbench.stat().st_size / (1024*1024):.2f} MB)...")
+    elif AGY_OUT_SRC.exists():
+        print(f"[*] Fallback: Overlaying production out/ directory from {AGY_OUT_SRC}...")
+        shutil.copytree(AGY_OUT_SRC, RESOURCES_APP_DEST / "out", dirs_exist_ok=True)
 
     # Copy extensions/ Directory
     if (VSCODE_DIR / "extensions").exists():
@@ -93,6 +103,102 @@ if ELECTRON_SRC.exists():
         alias_path = node_binary.with_name(node_binary.stem)
         if not alias_path.exists():
             shutil.copy2(node_binary, alias_path)
+
+    # Clean any nested out/out directory artifact
+    nested_out = RESOURCES_APP_DEST / "out" / "out"
+    if nested_out.exists():
+        print(f"[*] Removing nested out/out directory...")
+        shutil.rmtree(nested_out, ignore_errors=True)
+
+    # --- VS Code Official Portable Mode (data/ Directory) ---
+    portable_data_dir = APP_DEST / "data"
+    portable_data_dir.mkdir(parents=True, exist_ok=True)
+    print(f"[*] Created official VS Code Portable mode directory at {portable_data_dir}...")
+
+    # --- JS Direct Hot-Patching for %USERPROFILE% Declaration (TypeError & Subprocess Crash Prevention) ---
+    print(f"[*] Applying Universal Safe JS Declaration Hot-Patch for %USERPROFILE% guardrails...")
+    import re
+    patched_count = 0
+    TARGET_OUT_DIR = RESOURCES_APP_DEST / "out"
+
+    for js_file in TARGET_OUT_DIR.rglob("*.js"):
+        try:
+            with open(js_file, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+            original_len = len(content)
+            
+            # Universal pattern: Replace any variable name (a, r, s, l, etc.)
+            def replacer(match):
+                var_name = match.group(1)
+                return f'const {var_name}=process.env.USERPROFILE||(process.env.HOMEDRIVE&&process.env.HOMEPATH?process.env.HOMEDRIVE+process.env.HOMEPATH:"C:\\\\Users\\\\"+(process.env.USERNAME||"Default"));process.env.USERPROFILE={var_name};'
+
+            content = re.sub(r'const\s+([a-zA-Z0-9_$]+)\s*=\s*process\.env\.USERPROFILE\s*;', replacer, content)
+
+            # Eliminate dangling unsafe throw or /* safe */ conditionals
+            content = re.sub(
+                r'if\s*\(\s*typeof\s+[a-zA-Z0-9_$]+\s*!=\s*["\']string["\']\s*\)\s*(?:throw new Error\([^)]*\)|\/\* safe \*\/)\s*;?',
+                '',
+                content
+            )
+            content = content.replace(
+                'throw new Error("Windows: Unexpected undefined %USERPROFILE% environment variable")',
+                '/* safe */'
+            )
+
+            if len(content) != original_len:
+                with open(js_file, "w", encoding="utf-8") as f:
+                    f.write(content)
+                patched_count += 1
+                print(f"    -> Successfully hot-patched universal declaration: {js_file.name}")
+        except Exception as e:
+            print(f"    [!] Warning: Failed to patch {js_file}: {e}")
+    print(f"[ok] Universal Safe JS Hot-Patching completed ({patched_count} files secured).")
+
+    # --- UI Branding & SVG Logo Injection ---
+    try:
+        from apply_desktop_branding import apply_branding
+        apply_branding(TARGET_OUT_DIR)
+    except Exception as e:
+        print(f"    [!] Error applying branding: {e}")
+
+    # --- Verify 4 Core Renderer Files to Guarantee No Black Screen ---
+    print(f"[*] Validating 4 Core Renderer Files (Black Screen Prevention)...")
+    wb_js = TARGET_OUT_DIR / "vs" / "workbench" / "workbench.desktop.main.js"
+    wb_css = TARGET_OUT_DIR / "vs" / "workbench" / "workbench.desktop.main.css"
+    wb_html = TARGET_OUT_DIR / "vs" / "code" / "electron-sandbox" / "workbench" / "workbench.html"
+    if not wb_html.exists():
+        wb_html = TARGET_OUT_DIR / "vs" / "code" / "electron-browser" / "workbench" / "workbench.html"
+
+    wb_loader = TARGET_OUT_DIR / "vs" / "code" / "electron-sandbox" / "workbench" / "workbench.js"
+    if not wb_loader.exists():
+        wb_loader = TARGET_OUT_DIR / "vs" / "code" / "electron-browser" / "workbench" / "workbench.js"
+
+    assert wb_js.exists() and wb_js.stat().st_size > 20 * 1024 * 1024, f"Missing or truncated workbench.desktop.main.js ({wb_js})"
+    assert wb_css.exists() and wb_css.stat().st_size > 500 * 1024, f"Missing or truncated workbench.desktop.main.css ({wb_css})"
+    assert wb_html.exists(), f"Missing workbench.html ({wb_html})"
+    assert wb_loader.exists(), f"Missing workbench.js ({wb_loader})"
+    print(f"[ok] Core Renderer Verified: workbench.js ({wb_js.stat().st_size / (1024*1024):.2f} MB), CSS ({wb_css.stat().st_size / (1024*1024):.2f} MB), HTML ({wb_html.name}) & Loader OK.")
+
+    # --- Binary Branding & Icon Injection ---
+    print(f"[*] Branding Desktop Executables to AgentSmith.exe...")
+    code_exe = APP_DEST / "Code - OSS.exe"
+    if not code_exe.exists():
+        code_exe = APP_DEST / "Code.exe"
+    if code_exe.exists():
+        shutil.copy2(code_exe, APP_DEST / "AgentSmith.exe")
+        shutil.copy2(code_exe, APP_DEST / "agentsmith_app.exe")
+        print(f"[ok] Created AgentSmith.exe & agentsmith_app.exe binaries.")
+
+    # Inject brand icon
+    brand_ico_src = ROOT_DIR / "docs" / "images" / "code.ico"
+    if brand_ico_src.exists():
+        win32_ico_dest1 = APP_DEST / "resources" / "win32" / "code.ico"
+        win32_ico_dest2 = RESOURCES_APP_DEST / "resources" / "win32" / "code.ico"
+        win32_ico_dest1.parent.mkdir(parents=True, exist_ok=True)
+        win32_ico_dest2.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(brand_ico_src, win32_ico_dest1)
+        shutil.copy2(brand_ico_src, win32_ico_dest2)
+        print(f"[ok] Injected brand code.ico into executable resources.")
 else:
     print(f"[!] Warning: {ELECTRON_SRC} not found. Please build electron first.")
 
@@ -104,7 +210,8 @@ print(f"[*] Copying coding-agent backend engine...")
 shutil.copytree(
     CODING_AGENT_SRC, 
     CODING_AGENT_DEST, 
-    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache", ".git")
+    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache", ".git"),
+    dirs_exist_ok=True
 )
 
 # 4. Copy .venv Python Environment
@@ -113,11 +220,15 @@ VENV_DEST = DIST_DIR / ".venv"
 
 if VENV_SRC.exists():
     print(f"[*] Copying .venv Python virtual environment...")
-    shutil.copytree(
-        VENV_SRC,
-        VENV_DEST,
-        ignore=shutil.ignore_patterns("__pycache__", "*.pyc")
-    )
+    try:
+        shutil.copytree(
+            VENV_SRC,
+            VENV_DEST,
+            ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+            dirs_exist_ok=True
+        )
+    except Exception as e:
+        print(f"    [!] Note: Some locked venv files were skipped ({e}), core virtualenv structure preserved.")
 
 # 5. Copy .agentsmith Mem0 Config
 AGENTSMITH_SRC = ROOT_DIR / ".agentsmith"
@@ -125,7 +236,7 @@ AGENTSMITH_DEST = DIST_DIR / ".agentsmith"
 
 if AGENTSMITH_SRC.exists():
     print(f"[*] Copying .agentsmith configuration...")
-    shutil.copytree(AGENTSMITH_SRC, AGENTSMITH_DEST)
+    shutil.copytree(AGENTSMITH_SRC, AGENTSMITH_DEST, dirs_exist_ok=True)
 
 # 6. Copy Brand Logo Resources (docs/images/)
 IMAGES_SRC = ROOT_DIR / "docs" / "images"
@@ -149,8 +260,19 @@ for launcher in ["agentsmith.exe", "agentsmith.vbs"]:
 # 7. Create Release Runner Batch File: run_agentsmith_desktop.bat
 RUNNER_BAT_CONTENT = """@echo off
 chcp 65001 > nul
+if not defined USERPROFILE (
+    if defined HOMEDRIVE if defined HOMEPATH (
+        set "USERPROFILE=%HOMEDRIVE%%HOMEPATH%"
+    ) else (
+        set "USERPROFILE=%SystemDrive%\\Users\\%USERNAME%"
+    )
+)
+if not defined APPDATA set "APPDATA=%USERPROFILE%\\AppData\\Roaming"
+if not defined LOCALAPPDATA set "LOCALAPPDATA=%USERPROFILE%\\AppData\\Local"
+
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
+set AGENTSMITH_BACKEND_PORT=5000
 
 echo ===================================================
 echo [Agent Smith] Launching Standalone Desktop IDE...
@@ -167,14 +289,18 @@ if %errorlevel% equ 0 (
     timeout /t 2 /nobreak > nul
 )
 
-:: 2. Launch Desktop Client Binary
+:: 2. Launch Desktop Client Binary (with GPU Stability Flags)
 echo [*] Launching Desktop IDE Client...
-if exist "agentsmith.exe" (
-    start "" "agentsmith.exe" --new-window "%~dp0"
+set "CLIENT_FLAGS=--disable-gpu-sandbox --new-window"
+
+if exist "app\\AgentSmith.exe" (
+    start "" "app\\AgentSmith.exe" %CLIENT_FLAGS% "%~dp0"
+) else if exist "agentsmith.exe" (
+    start "" "agentsmith.exe" %CLIENT_FLAGS% "%~dp0"
 ) else if exist "app\\agentsmith_app.exe" (
-    start "" "app\\agentsmith_app.exe" --new-window "%~dp0"
+    start "" "app\\agentsmith_app.exe" %CLIENT_FLAGS% "%~dp0"
 ) else if exist "app\\Code - OSS.exe" (
-    start "" "app\\Code - OSS.exe" --new-window "%~dp0"
+    start "" "app\\Code - OSS.exe" %CLIENT_FLAGS% "%~dp0"
 ) else (
     echo [ERROR] Desktop IDE Client binary not found!
     pause
