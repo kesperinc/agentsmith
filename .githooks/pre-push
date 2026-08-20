@@ -1,18 +1,20 @@
 #!/bin/sh
 # ============================================================
-# Agent Smith 브랜치 가드레일 - pre-push 훅
-# main/staging 브랜치 force-push 차단
+# Agent Smith Branch Guardrail - pre-push hook
+# Only blocks force-push to main and staging.
+# Normal push (including merge commits) is always allowed.
+# Direct commits are already blocked by commit-msg hook.
 # ============================================================
 
-while read local_ref local_sha remote_ref remote_sha; do
-  # main 브랜치 force-push 차단
-  if echo "$remote_ref" | grep -q "refs/heads/main"; then
-    BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
-    if [ "$BRANCH" = "main" ]; then
+# Read push options from git push arguments via GIT_PUSH_OPTION_*
+# Check if --force or -f flag is being used
+for arg in "$@"; do
+  if [ "$arg" = "--force" ] || [ "$arg" = "-f" ]; then
+    CURRENT=$(git symbolic-ref --short HEAD 2>/dev/null)
+    if [ "$CURRENT" = "main" ] || [ "$CURRENT" = "staging" ]; then
       echo ""
-      echo "❌ [GUARDRAIL] main 브랜치 직접 push는 허용되지 않습니다."
-      echo "   브랜치 전략: feature/* ➔ staging ➔ main"
-      echo "   현재 feature 브랜치에서 작업 후 머지 요청을 통해 반영하세요."
+      echo "[GUARDRAIL] Force-push to '$CURRENT' is not allowed."
+      echo "  Use --force-with-lease on feature/* branches only."
       echo ""
       exit 1
     fi
