@@ -1,0 +1,38 @@
+#!/bin/sh
+# ============================================================
+# Agent Smith 브랜치 가드레일 - pre-commit 훅
+# UTF-8 BOM 파일 감지, API Key 하드코딩 차단 (CortexOS SAST)
+# ============================================================
+
+# --- CortexOS SAST-01: API Key/Secret 하드코딩 감지 ---
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 하드코딩된 API Key 패턴 검색 (sk-, AKIA, Bearer 등)
+FOUND_SECRETS=0
+for FILE in $STAGED_FILES; do
+  if echo "$FILE" | grep -qE "\.(py|ts|js|json|env|yml|yaml|sh|bat|ps1)$"; then
+    if git diff --cached -- "$FILE" | grep -qE "(sk-[a-zA-Z0-9]{20,}|AKIA[0-9A-Z]{16}|ghp_[a-zA-Z0-9]{36}|AIza[0-9A-Za-z\-_]{35})"; then
+      echo "❌ [CORTEX-SEC-01] API Key/Secret 하드코딩 감지: $FILE"
+      FOUND_SECRETS=1
+    fi
+  fi
+done
+
+if [ "$FOUND_SECRETS" -eq 1 ]; then
+  echo ""
+  echo "   .env 파일에 키를 분리하고, .gitignore에 .env를 추가하세요."
+  echo ""
+  exit 1
+fi
+
+# --- CortexOS SAST-02: eval()/exec() 사용 감지 ---
+for FILE in $STAGED_FILES; do
+  if echo "$FILE" | grep -qE "\.(py|js|ts)$"; then
+    if git diff --cached -- "$FILE" | grep -qE "^\+.*\beval\s*\(|^\+.*\bexec\s*\("; then
+      echo "⚠️ [CORTEX-SEC-02] eval()/exec() 사용 감지: $FILE"
+      echo "   보안 위험 함수 사용 여부를 확인하세요."
+    fi
+  fi
+done
+
+exit 0
