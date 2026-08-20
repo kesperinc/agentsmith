@@ -7,17 +7,29 @@
 
 ---
 
-## 🎯 0단계: PC 저장소 현행화 & Electron 클라이언트 장애 해결 (완료 - 2026-08-20)
+## 🎯 0단계: PC 저장소 현행화, 바이너리 표준 운영 지침(SOG) & 장애 해결 (완료 - 2026-08-20)
 - [x] **타 PC 작업내역 수령 및 저장소 현행화**:
-  - [x] 원격 저장소 `origin/feature/setup-git-guardrails` (`65c5fb3`) 하드리셋 동기화 완료
+  - [x] 원격 저장소 `origin/feature/setup-git-guardrails` (`7559bbb`) 동기화 완료
   - [x] PC 현행화 명세서 작성 ([2026-08-20_pc_synchronization_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_pc_synchronization_spec.md))
+- [x] **바이너리 빌드 반복 오류 분석 및 표준 운영 지침서(SOG) 수립 (/plan-eng-review)**:
+  - [x] 8대 반복 오류(Spectre, ABI 불일치, out/main 누락, Black Screen, 콘솔 멈춤, 파일 잠금, BOM, csc 탐색) 분석표 정리
+  - [x] 3단계 1-Click 표준 빌드 및 문제해결 종합 지침서 작성 ([2026-08-20_desktop_binary_build_and_troubleshooting_guide.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_desktop_binary_build_and_troubleshooting_guide.md))
+  - [x] 5초 자동 무결성 사전/사후 진단 도구 개발 ([scripts/verify_desktop_bundle.py](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/scripts/verify_desktop_bundle.py))
+  - [x] 빌드 파이프라인 및 SOG 상세명세서 작성 ([2026-08-20_binary_build_pipeline_and_sog_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_binary_build_pipeline_and_sog_spec.md))
 - [x] **Electron 클라이언트 GUI 실행 장애 4단계 완벽 해결**:
   - [x] [장애 1] `out/main` 누락 ➔ `vscode/out` 복사 로직 추가로 해결
   - [x] [장애 2] 백엔드 콘솔 멈춤 ➔ PowerShell `Start-Process -WindowStyle Hidden` 비동기 백그라운드 런처 격리로 해결
   - [x] [장애 3] 창 튕김 (Crash) ➔ `Antigravity IDE` 내 Electron 27 ABI 118 호환 C++ 네이티브 모듈 14종 오버레이 복사로 해결
   - [x] [장애 4] 화면 검은색 멈춤 ➔ CJS loader 확장자 미지정 require 바이너리 별칭(Alias) 사본 생성 및 `node_modules.asar` 제거 후 100% Unpacked 모듈 구조로 해결
+- [x] **상위(`../`) 프로젝트 연관 문서 및 제안서 이관 & 현행화**:
+  - [x] 세일즈 오퍼링 포털 및 HTML 제안서 13종 복사 (`docs/offering/`)
+  - [x] 상위 워크로그 및 핸드오버 문서 복사 (`docs/worklog/`)
+  - [x] 아이디어 및 기초설계 문서 복사 (`docs/ideation/`)
+  - [x] 에이전트 빌더, 코딩 에이전트 분석, 루프 운영 가이드 등 12종 가이드 복사 (`docs/guides/`)
+  - [x] 전체 개요 문서 복사 (`docs/AI_FULLSTACK_OVERVIEW.md`)
+  - [x] 상위 문서 이관 및 현행화 명세서 작성 ([2026-08-20_parent_docs_migration_and_sync_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_parent_docs_migration_and_sync_spec.md))
 - [x] **C# Native 1-Click 단일 실행 설치 바이너리 컴파일 완료**:
-  - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (697.82 MB) 구축 완료
+  - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (564.21 MB) 구축 완료
 - [x] **통합 인수인계 보고서 작성**:
   - [x] [`coding-agent/docs/2026-08-20_project_handover_report.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_project_handover_report.md)
   - [x] [`coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_desktop_client_crash_and_renderer_fix_spec.md)
@@ -32,9 +44,9 @@
 - [x] **11단계 세일즈 패키지의 '4대 핵심 Phase' 압축 그루핑 로드맵 개편**:
   - [x] Phase 1(진단/검증) ➔ Phase 2(코어전환) ➔ Phase 3(AI현대화) ➔ Phase 4(운영/확장) 인터랙티브 UI 구현
 - [x] **인터랙티브 웹 제안서 포털 갱신 및 핸드오버 문서 작성**:
-  - [x] [`offering/nvidia_ai_factory_vs_mzc_fullstack_comparison.html`](file:///c:/dev/antigravity-workspace/aifullstack/offering/nvidia_ai_factory_vs_mzc_fullstack_comparison.html)
-  - [x] [`docs/worklog/2026-08-18_ai_fullstack_offering_handover.md`](file:///c:/dev/antigravity-workspace/aifullstack/docs/worklog/2026-08-18_ai_fullstack_offering_handover.md)
-  - [x] [`agentsmith/coding-agent/docs/specs/2026-08-18_nvidia_ai_factory_vs_mzc_fullstack_spec.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-18_nvidia_ai_factory_vs_mzc_fullstack_spec.md)
+  - [x] [`docs/offering/nvidia_ai_factory_vs_mzc_fullstack_comparison.html`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/docs/offering/nvidia_ai_factory_vs_mzc_fullstack_comparison.html)
+  - [x] [`docs/worklog/2026-08-18_ai_fullstack_offering_handover.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/docs/worklog/2026-08-18_ai_fullstack_offering_handover.md)
+  - [x] [`coding-agent/docs/specs/2026-08-18_nvidia_ai_factory_vs_mzc_fullstack_spec.md`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-18_nvidia_ai_factory_vs_mzc_fullstack_spec.md)
 
 ---
 

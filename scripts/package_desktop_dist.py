@@ -208,20 +208,31 @@ with open(DIST_DIR / "run_agentsmith_desktop.bat", "w", encoding="utf-8") as f:
     f.write(RUNNER_BAT_CONTENT)
 print(f"[ok] Created run_agentsmith_desktop.bat launcher.")
 
-# 8. Create .env.example
-ENV_EXAMPLE_CONTENT = """# Agent Smith API Key Configuration
-GEMINI_API_KEY=your_gemini_api_key_here
-GOOGLE_API_KEY=your_google_api_key_here
+# 8. Copy .env.example and .env if available
+ROOT_ENV_EXAMPLE = ROOT_DIR / ".env.example"
+if ROOT_ENV_EXAMPLE.exists():
+    shutil.copy2(ROOT_ENV_EXAMPLE, DIST_DIR / ".env.example")
+    print(f"[ok] Copied root .env.example to release package.")
+else:
+    ENV_EXAMPLE_CONTENT = """# Agent Smith API Key Configuration
+GEMINI_API_KEY=
+GOOGLE_API_KEY=
+OPENROUTER_API_KEY=
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
 
 # Backend Server Configuration
 PORT=5000
 HOST=127.0.0.1
+AGENTSMITH_BACKEND_PORT=5000
+AGENTSMITH_BACKEND_HOST=127.0.0.1
+AGENTSMITH_MCP_PORT=3000
 PYTHONUTF8=1
 PYTHONIOENCODING=utf-8
 """
-
-with open(DIST_DIR / ".env.example", "w", encoding="utf-8") as f:
-    f.write(ENV_EXAMPLE_CONTENT)
+    with open(DIST_DIR / ".env.example", "w", encoding="utf-8") as f:
+        f.write(ENV_EXAMPLE_CONTENT)
+    print(f"[ok] Created .env.example.")
 
 # 9. Create Release README_RELEASE.md
 README_RELEASE_CONTENT = """# Agent Smith Enterprise Desktop IDE Release Package (v1.0.0)

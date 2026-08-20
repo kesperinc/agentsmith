@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>On-Premise AI Full Stack Architecture 가이드라인</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0c10;
+      --panel-bg: #131520;
+      --card-bg: #1a1d2e;
+      --border-color: #262b44;
+      --text-color: #e5e9f0;
+      --text-muted: #8a92b2;
+      --primary: #00abf0;
+      --primary-glow: rgba(0, 171, 240, 0.15);
+      --accent: #d4af37;
+      --accent-glow: rgba(212, 175, 55, 0.15);
+      --success: #00e676;
+      --gradient-title: linear-gradient(135deg, #00abf0 0%, #d4af37 100%);
+      --gradient-card: linear-gradient(180deg, #1d2138 0%, #151829 100%);
+      --font-sans: 'Inter', sans-serif;
+      --font-title: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 레이아웃 구조 */
+    .container {
+      display: flex;
+      min-height: 100vh;
+      max-width: 1600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* 사이드바 네비게이션 */
+    aside {
+      width: 320px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      padding: 40px 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-title);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-item a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: block;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item a:hover {
+      color: var(--primary);
+      background: rgba(0, 171, 240, 0.05);
+      border-left: 2px solid var(--primary);
+      padding-left: 20px;
+    }
+
+    .nav-item.active a {
+      color: var(--text-color);
+      background: rgba(0, 171, 240, 0.08);
+      border-left: 2px solid var(--primary);
+      font-weight: 600;
+    }
+
+    /* 메인 콘텐츠 영역 */
+    main {
+      flex: 1;
+      padding: 60px 80px;
+      max-width: 1200px;
+    }
+
+    header {
+      margin-bottom: 50px;
+    }
+
+    .meta-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    h1 span {
+      background: var(--gradient-title);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 800px;
+    }
+
+    /* 섹션 공통 */
+    section {
+      margin-bottom: 80px;
+      scroll-margin-top: 80px;
+    }
+
+    h2 {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: #c5cbd8;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* 그리드 카드 레이아웃 */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: var(--gradient-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 30px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      transition: background 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: 0 10px 20px rgba(0, 171, 240, 0.1);
+    }
+
+    .card:hover::before {
+      background: var(--gradient-title);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-glow);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* 아키텍처 다이어그램 (CSS 구성도) */
+    .architecture-diagram {
+      background: #0f111a;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .layer {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px 24px;
+      background: rgba(26, 29, 46, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .layer:hover {
+      border-color: var(--primary);
+      background: rgba(26, 29, 46, 0.9);
+    }
+
+    .layer-label {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      font-weight: 700;
+      width: 180px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .layer-components {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .comp {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comp::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .flow-arrow {
+      align-self: center;
+      color: var(--border-color);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    /* 하이라이트 박스 */
+    .highlight-box {
+      background: rgba(212, 175, 55, 0.05);
+      border-left: 4px solid var(--accent);
+      padding: 24px;
+      border-radius: 0 12px 12px 0;
+      margin: 30px 0;
+    }
+
+    .highlight-box h4 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .highlight-box p {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* 테이블 스타일 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      background: var(--panel-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+    }
+
+    th {
+      background: #191c2b;
+      font-family: var(--font-title);
+      font-weight: 600;
+      font-size: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: #fff;
+    }
+
+    td {
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* 반응형 대응 */
+    @media (max-width: 1024px) {
+      .container {
+        flex-direction: column;
+      }
+      aside {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 30px 40px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+      main {
+        padding: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 네비게이션 사이드바 -->
+    <aside>
+      <div class="brand">
+        <span class="brand-logo">ON-PREMISE AI</span>
+        <span class="brand-sub">Architecture Guide</span>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item active"><a href="#overview">1. 아키텍처 개요</a></li>
+        <li class="nav-item"><a href="#hardware">2. 하드웨어 구성</a></li>
+        <li class="nav-item"><a href="#virtualization">3. 인프라 & 가상화</a></li>
+        <li class="nav-item"><a href="#serving">4. AI 모델 서빙 & RAG</a></li>
+        <li class="nav-item"><a href="#security">5. 폐쇄망 보안 체계</a></li>
+        <li class="nav-item"><a href="#observability">6. 모니터링 & 관제</a></li>
+      </ul>
+    </aside>
+
+    <!-- 메인 본문 -->
+    <main>
+      <header>
+        <span class="meta-tag">On-Premise Architecture Guide v1.0</span>
+        <h1>온프레미스 <span>AI 풀스택 아키텍처</span> 가이드라인</h1>
+        <p class="header-desc">
+          보안과 데이터 주권을 확보하기 위해 외부 네트워크와 격리된 온프레미스(On-Premise) 환경에서 고성능 대형 언어 모델(LLM) 및 지식 베이스 RAG 파이프라인을 안정적으로 구축하고 확장하기 위한 엔터프라이즈 레벨의 아키텍처 표준 가이드라인입니다.
+        </p>
+      </header>
+
+      <!-- 1. 아키텍처 개요 -->
+      <section id="overview">
+        <h2>1. 아키텍처 개요 (Overview)</h2>
+        <p>
+          본 온프레미스 AI 풀스택 아키텍처는 고성능 연산 워크로드(GPU)부터 실시간 웹 프론트엔드까지 폐쇄망 내부에서 독립적으로 처리될 수 있도록 계층화되어 있습니다. 외부의 퍼블릭 클라우드 의존성을 100% 제거하고, 내부 데이터의 기밀성을 완벽히 보장하는 지리적 통제를 전제로 설계되었습니다.
+        </p>
+
+        <!-- 아키텍처 비주얼 다이어그램 -->
+        <div class="architecture-diagram">
+          <div class="layer">
+            <span class="layer-label">Presentation</span>
+            <div class="layer-components">
+              <span class="comp">React & Vite</span>
+              <span class="comp">Nginx Web Server</span>
+            </div>
+          </div>
+          <div class="flow-arrow">▼</div>
+          <div class="layer">
+            <span class="layer-label">Application</span>
+            <div class="layer-components">
+              <span class="comp">FastAPI (Python)</span>
+              <span class="comp">Ray Core (Distributed Task)</span>
+            </div>
+          </div>
+          <div class="flow-arrow">▼</div>
+          <div class="layer">
+            <span class="layer-label">AI & Knowledge</span>
+            <div class="layer-components">
+              <span class="comp">vLLM Inference Engine</span>
+              <span class="comp">Milvus Vector DB</span>
+              <span class="comp">PostgreSQL & pgvector</span>
+            </div>
+          </div>
+          <div class="flow-arrow">▼</div>
+          <div class="layer">
+            <span class="layer-label">Infrastructure</span>
+            <div class="layer-components">
+              <span class="comp">Docker & K8s</span>
+              <span class="comp">NVIDIA CUDA/Triton</span>
+              <span class="comp">NVMe Shared RAID</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <h4>핵심 설계 사상: 완전 자급자족형 아키텍처</h4>
+          <p>
+            패키지 설치, 의존성 라이브러리, 모델 가중치(Weights)의 유효성 검사 등 어플리케이션 구동의 전 과정이 오프라인 미러링 저장소(Local Mirroring Repository)를 통해 통제되어야 하며, 인터넷망 차단 상태에서도 자가 치유 및 빌드가 지속 가능한 구조여야 합니다.
+          </p>
+        </div>
+      </section>
+
+      <!-- 2. 하드웨어 구성 -->
+      <section id="hardware">
+        <h2>2. 하드웨어 하부 인프라 (Hardware Topology)</h2>
+        <p>
+          온프레미스 AI 연산은 막대한 GPU 메모리와 스토리지 IOPS를 요구합니다. 모델 파라미터 크기 및 다중 접속량(Concurrency)에 따라 적절한 GPU 버스 인터페이스와 전원 공급 토폴로지를 구성해야 합니다.
+        </p>
+
+        <div class="grid-container">
+          <div class="card">
+            <div class="card-icon">GPU</div>
+            <div class="card-title">연산 코어 아키텍처</div>
+            <div class="card-desc">
+              H100/A100 (대규모 학습/인퍼런스) 또는 RTX 6000 Ada(실전형 서빙). 고대역폭 메모리(HBM) 및 NVLink 인터페이스를 연결하여 모델 병렬화 처리량을 극대화합니다.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">SSD</div>
+            <div class="card-title">Storage IOPS 보강</div>
+            <div class="card-desc">
+              RAG 및 벡터 검색 시 고부하 무작위 조회를 위해 PCIe Gen5 기반 NVMe SSD 다중 RAID 구성 필수. 캐시 레이어 분리를 통한 모델 로딩 병목 최소화.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">NET</div>
+            <div class="card-title">고대역 백본 네트워크</div>
+            <div class="card-desc">
+              GPU 분산 연산 동기화를 위해 노드 간 InfiniBand(최소 200Gbps) 또는 고속 RDMA 지원 RoCE 스위칭 허브 구성을 통한 레이턴시 단축.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 인프라 & 가상화 -->
+      <section id="virtualization">
+        <h2>3. 가상화 및 오케스트레이션 (Containerization)</h2>
+        <p>
+          다수의 서비스 애플리케이션이 GPU 연산 자원을 안정적으로 나누어 사용하고, 유동적인 트래픽에 맞춰 실시간으로 GPU 연산 한계를 할당할 수 있도록 Kubernetes(K8s)와 가속 드라이버 스택을 구축합니다.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>기술 스택</th>
+              <th>권장 구현 형태</th>
+              <th>아키텍처 상의 역할</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>NVIDIA Container Toolkit</strong></td>
+              <td>Docker 데몬 연동 (Runtime: nvidia)</td>
+              <td>컨테이너 내부에서 물리 호스트의 CUDA 코어 및 VRAM 직접 액세스 보장.</td>
+            </tr>
+            <tr>
+              <td><strong>GPU Operator (Kubernetes)</strong></td>
+              <td>vGPU 슬라이싱 & MIG (Multi-Instance GPU)</td>
+              <td>한 장의 물리 GPU를 다수의 서비스 인스턴스가 VRAM 격리 상태로 공평하게 논리 분할하여 사용.</td>
+            </tr>
+            <tr>
+              <td><strong>KubeFlow / Triton</strong></td>
+              <td>모델 배포 파이프라인 통합</td>
+              <td>동적 배치(Dynamic Batching)를 이용한 대규모 동시 추론 요청 처리 최적화 및 큐 관리.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 4. AI 모델 서빙 & RAG -->
+      <section id="serving">
+        <h2>4. AI 모델 서빙 & RAG 파이프라인 (Inference & RAG)</h2>
+        <p>
+          온프레미스 인퍼런스는 비용 효율적인 최적화 엔진의 탑재 여부가 전체 인프라 비용(TCO)을 결정합니다. vLLM 엔진과 로컬 임베딩 벡터 데이터베이스 결합은 가속화의 중심입니다.
+        </p>
+
+        <div class="grid-container">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">vLLM 가속 엔진</div>
+            <div class="card-desc">
+              PagedAttention 기법을 통해 GPU 메모리 단편화를 제거하고 처리량을 최대 3~4배 증가시킵니다. FP8/AWQ 양자화 모델 서빙으로 VRAM 효율 극대화.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📂</div>
+            <div class="card-title">Milvus Vector DB</div>
+            <div class="card-desc">
+              대규모 문서 정밀 검색을 위해 분산형 벡터 DB 운영. 메타데이터 필터링 및 하이브리드 RRF(Reciprocal Rank Fusion)를 통한 RAG 적중률 상승.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🛠&nbsp;</div>
+            <div class="card-title">FastAPI Streaming API</div>
+            <div class="card-desc">
+              SSE(Server-Sent Events) 프로토콜을 구현하여 로컬 사용자에게 LLM 답변 텍스트를 실시간 글자 단위(Stream)로 응답 지연 없이 출력하는 아키텍처.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 폐쇄망 보안 체계 -->
+      <section id="security">
+        <h2>5. 온프레미스 폐쇄망 보안 체계 (Security Governance)</h2>
+        <p>
+          온프레미스 인프라는 기본적으로 '물리적 기밀화'를 전제로 합니다. 따라서 네트워크 경계와 내부 행위 제어가 최우선 원칙이 됩니다.
+        </p>
+        <div class="highlight-box">
+          <h4>보안 관제 3대 행동 원칙</h4>
+          <p>
+            1. <strong>완전 단절(Air-Gapped)</strong>: 외부 인터넷과의 어떠한 직접/우회 라우팅 경로도 존재해서는 안 됨.<br>
+            2. <strong>PII 데이터 마스킹</strong>: 사용자 정보(전화번호, 주민번호 등)는 저장 전 로컬 프록시 필터를 통해 암호화 및 비식별화 처리 필수.<br>
+            3. <strong>로컬 CA & SSL</strong>: 폐쇄망 내부 사설 CA 인증서를 발급하여 모든 네트워크 구간(프론트-백-DB) 통신 암호화(HTTPS/TLS 1.3) 강제.
+          </p>
+        </div>
+      </section>
+
+      <!-- 6. 모니터링 & 관제 -->
+      <section id="observability">
+        <h2>6. 모니터링 및 실시간 관제 (Observability)</h2>
+        <p>
+          GPU의 온도를 비롯하여 전력 공급 상태, VRAM 잔여 상태, RAG 검색 스코어 적중률, API 서빙 레이턴시를 통합 감시할 수 있는 대시보드가 반드시 수반되어야 합니다.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>관제 대상</th>
+              <th>사용 도구</th>
+              <th>임계치 가이드라인 및 액션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GPU 물리 상태</strong></td>
+              <td>NVIDIA DCGM Exporter + Prometheus</td>
+              <td>GPU 온도가 80°C 초과 시 스케줄러 자동 이탈 및 쿨링 팬 팬 스피드 제어 경보.</td>
+            </tr>
+            <tr>
+              <td><strong>API 요청 레이턴시</strong></td>
+              <td>OpenTelemetry + Grafana</td>
+              <td>TTFT(Time To First Token)가 1.5초를 초과할 경우 vLLM 복제 컨테이너 오토스케일 아웃 실행.</td>
+            </tr>
+            <tr>
+              <td><strong>RAG 검색 신뢰도</strong></td>
+              <td>로컬 LLM 채점관 파이프라인</td>
+              <td>답변 속 RAG 청크 유사도 점수가 0.5 미만일 경우 사용자 화면에 할루시네이션 가이드 표기 강제.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // 네비게이션 액티브 효과
+    const sections = document.querySelectorAll('section');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= (sectionTop - 120)) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        const href = item.querySelector('a').getAttribute('href').substring(1);
+        if (href === current) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

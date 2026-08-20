@@ -4,7 +4,23 @@ FastAPI Web App (Port 5000) with REST API & MCP Router (Port 3000)
 """
 
 import sys
+import os
 from pathlib import Path
+
+# Load .env configuration
+try:
+    from dotenv import load_dotenv
+    # Search root and local .env
+    current_file = Path(__file__).resolve()
+    env_paths = [
+        current_file.parent.parent.parent / ".env",  # agentsmith/.env
+        current_file.parent.parent / ".env",         # coding-agent/.env
+    ]
+    for env_path in env_paths:
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=False)
+except ImportError:
+    pass
 
 # Add src to sys.path
 src_dir = Path(__file__).resolve().parent
@@ -22,7 +38,6 @@ from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 import random
 import time
-import os
 import smtplib
 from email.mime.text import MIMEText
 
@@ -426,4 +441,6 @@ def audio_transcriptions(req: AudioTranscribeRequest):
     }
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=False)
+    server_host = os.getenv("AGENTSMITH_BACKEND_HOST", os.getenv("HOST", "127.0.0.1"))
+    server_port = int(os.getenv("AGENTSMITH_BACKEND_PORT", os.getenv("PORT", "5000")))
+    uvicorn.run("main:app", host=server_host, port=server_port, reload=False)

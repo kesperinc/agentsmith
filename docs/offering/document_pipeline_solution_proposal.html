@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기업 문서 파이프라인 AI 패키지 제안서 (Document Intelligence & RAG System)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
+  <style>
+    :root {
+      --bg-color: #0b0d14;
+      --panel-bg: #121522;
+      --card-bg: #181c2e;
+      --card-border: #262c45;
+      --primary: #00abf0;
+      --accent-gold: #d4af37;
+      --text-main: #f0f3f9;
+      --text-muted: #8b95b5;
+      --success: #00e676;
+      --warning: #ff9100;
+      --blackwell: #76b900;
+      --purple: #ab47bc;
+      --gradient-title: linear-gradient(135deg, #00abf0 0%, #76b900 50%, #d4af37 100%);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 1450px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; padding: 40px 20px; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; padding: 6px 16px; background: rgba(0, 171, 240, 0.15); border: 1px solid var(--primary); color: var(--primary); border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    h1 { font-family: var(--font-title); font-size: 2.5rem; font-weight: 800; background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 950px; margin: 0 auto; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .card { background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; }
+    .card-title { font-family: var(--font-title); font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card-title .icon { width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+
+    .alert-box { background: rgba(0, 171, 240, 0.08); border-left: 4px solid var(--primary); padding: 18px; border-radius: 8px; margin: 18px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--card-border); }
+    th { background-color: var(--card-bg); color: var(--primary); font-weight: 700; font-family: var(--font-title); }
+    .price-tag { font-family: var(--font-title); font-weight: 800; color: var(--accent-gold); font-size: 1.05rem; }
+
+    pre code { display: block; background: #0d0e17; padding: 18px; border-radius: 10px; border: 1px solid var(--card-border); font-family: var(--font-code); font-size: 0.85rem; color: #00abf0; overflow-x: auto; line-height: 1.45; }
+    .mermaid { background: var(--card-bg); padding: 15px; border-radius: 12px; margin: 15px 0; overflow-x: auto; }
+    
+    .cite-box { font-size: 0.82rem; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px dashed var(--card-border); padding: 10px 15px; border-radius: 6px; margin-top: 10px; }
+    footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 25px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">AI Solution Package #1</div>
+    <h1>기업 문서 파이프라인 AI 패키지 제안서</h1>
+    <p class="subtitle">기업 문서 가공, 벡터화, 검색 및 지식 기반 서빙을 위한 Red Hat OpenShift AI & Cohere/Articul8 RAG 시스템</p>
+  </header>
+
+  <!-- Section 1: Citations & Reference Materials -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon"></div>
+      1. 기초 자료 및 참조 문서 출처 (Citations & Reference Materials)
+    </div>
+    <div class="alert-box">
+      본 기술 제안서는 아래의 공식 인프라 벤더 문서, GPU 아키텍처 백서 및 Enterprise AI 레퍼런스를 인용하여 작성되었습니다.
+    </div>
+    <div class="cite-box">
+      • [인용 1] <strong>Red Hat OpenShift AI 2.14 Documentation</strong>: Single Node OpenShift(SNO) 및 KServe vLLM ServingRuntime 기술 가이드라인.<br>
+      • [인용 2] <strong>NVIDIA Blackwell Architecture Technical Whitepaper (2025/2026)</strong>: RTX Pro Blackwell Edition 및 B200 Air-Cooling / DLC (Direct Liquid Cooling) 냉각 가이드.<br>
+      • [인용 3] <strong>Cohere Command A & Reranker v3 On-Premise Deployment Guide</strong>: 프라이빗 LLM RAG 파이프라인 및 Tensor Parallelism 규격.<br>
+      • [인용 4] <strong>MinIO High-Performance Object Storage Architecture</strong>: Kubernetes Local Storage Operator(topolvm) 연동 S3 파이프라인.<br>
+      • [인용 5] <strong>Red Hat OpenShift Observability & Datadog Enterprise Guide</strong>: K8s APM, Prometheus/Grafana 및 OpenTelemetry 추적 표준.
+    </div>
+  </div>
+
+  <!-- Section 2: Stepwise GPU & Hardware Expansion Strategy -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--blackwell);"></div>
+      2. 단계별 하드웨어 & GPU 냉각 방식 확장 전략 (Air-Cooling → DLC)
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>확장 단계</th>
+          <th>서버 & GPU 탑재 규격</th>
+          <th>냉각 방식 (Cooling Strategy)</th>
+          <th>목적 및 지원 데이터 규모</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1 (PoC 진입)</strong></td>
+          <td>Dell PowerEdge R760xa (4x RTX Pro Blackwell Edition 60GB)</td>
+          <td><strong>Air-Cooling (공랭식 랙)</strong></td>
+          <td>초기 PoC 및 문서 10만 건 미만 지식 RAG 파이프라인 구축</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2 (상용 확장)</strong></td>
+          <td>Dell XE8640 / XE9640 (4x~8x B200 / H200 NVL)</td>
+          <td><strong>High-Flow Air Cooling</strong></td>
+          <td>전사 부서 확장 (문서 100만 건 이상, 동시 사용자 500명)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3 (초대형 엔터프라이즈)</strong></td>
+          <td>Dell PowerEdge XE9680 DLC (8x Blackwell B200 DLC)</td>
+          <td><strong>Direct Liquid Cooling (DLC 수랭식)</strong></td>
+          <td>수천만 건 문서 실시간 파이프라인, 파인튜닝, 무중단 센터 구축</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 3: Hardware Topology & Private IP Table -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon"></div>
+      3. 하드웨어 구성도 초안 및 사설 IP 대역 테이블
+    </div>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph Network_Fabric ["Enterprise Private Network (VLAN 100 / 200)"]
+        Mgmt_Switch["Dell S5248F-ON (Management & OCP Ingress)"]
+    end
+
+    subgraph Dell_R760xa ["Dell PowerEdge R760xa (SNO Single Node Cluster)"]
+        subgraph OCP_Layer ["Red Hat Enterprise Linux + OpenShift AI SNO"]
+            CP_Pod["OpenShift Control Plane<br>192.168.10.11"]
+            LVM_Pod["OpenShift LVM TopoLVM<br>192.168.10.15"]
+            MinIO_Pod["MinIO S3 Storage<br>192.168.10.20"]
+            RHOAI_vLLM["RHOAI vLLM ServingRuntime<br>192.168.10.30"]
+        end
+
+        subgraph GPU_Array ["4x RTX Pro Blackwell Edition (240GB VRAM)"]
+            GPU01["GPU 0,1 (TP=2): Cohere Command A"]
+            GPU2["GPU 2: Cohere Embed v3"]
+            GPU3["GPU 3: Cohere Reranker v3 + Qdrant"]
+        end
+    end
+
+    Mgmt_Switch --> OCP_Layer
+    RHOAI_vLLM --> GPU_Array
+    </div>
+
+    <h4 style="color: var(--primary); margin: 15px 0 10px;">사설 IP 대역 구성표 (Private IP Allocation Table)</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>장비 / 서비스 요소</th>
+          <th>호스트명 (Hostname)</th>
+          <th>사설 IP 주소 (Private IP)</th>
+          <th>서브넷 / 가상 IP (VIP)</th>
+          <th>비고</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>서버 iDRAC Management</td>
+          <td>idrac-r760xa.internal</td>
+          <td>192.168.1.100</td>
+          <td>255.255.255.0 (/24)</td>
+          <td>Out-of-Band 물리 관리포트</td>
+        </tr>
+        <tr>
+          <td>OpenShift SNO Host (Baremetal)</td>
+          <td>sno-node1.internal</td>
+          <td>192.168.10.11</td>
+          <td>255.255.255.0 (/24)</td>
+          <td>RHEL 9.x OS IP</td>
+        </tr>
+        <tr>
+          <td>OpenShift API Virtual IP</td>
+          <td>api.sno-cluster.internal</td>
+          <td>192.168.10.200</td>
+          <td>VIP (Virtual IP)</td>
+          <td>OCP API Endpoint</td>
+        </tr>
+        <tr>
+          <td>OpenShift Ingress Route VIP</td>
+          <td>*.apps.sno-cluster.internal</td>
+          <td>192.168.10.201</td>
+          <td>VIP (Virtual IP)</td>
+          <td>App & Gateway Route</td>
+        </tr>
+        <tr>
+          <td>MinIO Object Storage Service</td>
+          <td>minio-store.rhoai-doc.svc</td>
+          <td>192.168.10.20 (K8s ClusterIP)</td>
+          <td>Port: 9000, 9001</td>
+          <td>로컬 S3 모델/문서 저장소</td>
+        </tr>
+        <tr>
+          <td>Cohere Command vLLM API Pod</td>
+          <td>cohere-command.rhoai-doc.svc</td>
+          <td>192.168.10.30 (K8s ClusterIP)</td>
+          <td>Port: 8000 (OpenAI API)</td>
+          <td>GPU 0, 1 (TP=2) 서빙</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 4: Observability & Budget -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--accent-gold);"></div>
+      4. Observability(관찰 가능성) 추가 여부에 따른 예상 가격 분석 (VAT 별도)
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>구분 항목</th>
+          <th>기본 구성 (Observability 미포함)</th>
+          <th>OpenShift Native Observability 탑재</th>
+          <th>Datadog / Dynatrace Enterprise APM 연동</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>모니터링 방식</strong></td>
+          <td>기본 K8s cAdvisor 로그</td>
+          <td><strong>Prometheus + Grafana + OpenTelemetry</strong></td>
+          <td>Datadog SaaS / On-prem APM Agent</td>
+        </tr>
+        <tr>
+          <td><strong>HW CAPEX (서버/GPU)</strong></td>
+          <td>125,000,000 원 (Dell R760xa)</td>
+          <td>125,000,000 원</td>
+          <td>125,000,000 원</td>
+        </tr>
+        <tr>
+          <td><strong>SW 라이선스 (연간)</strong></td>
+          <td>243,000,000 원 (RHOAI+Cohere)</td>
+          <td><strong>258,000,000 원</strong> (OpenShift Obs 연간)</td>
+          <td><strong>275,000,000 원</strong> (Datadog Host/APM 서브스크립션)</td>
+        </tr>
+        <tr>
+          <td><strong>구축 SI 비용 (1회성)</strong></td>
+          <td>40,000,000 원</td>
+          <td>50,000,000 원 (대시보드/알림 구축)</td>
+          <td>60,000,000 원 (APM 연동)</td>
+        </tr>
+        <tr style="background: rgba(212,175,55,0.08); font-weight: bold;">
+          <td><strong>1년 차 총 TCO 예산</strong></td>
+          <td><span class="price-tag">408,000,000 원</span></td>
+          <td><span class="price-tag" style="color: var(--primary);">433,000,000 원</span></td>
+          <td><span class="price-tag" style="color: var(--accent-gold);">460,000,000 원</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 5: AI Agent Automated Command & K8s YAML -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--purple);"></div>
+      5. AI Agent (Codex/Antigravity/Claude Code) 자동 설치 명령어 순서 & K8s YAML
+    </div>
+
+    <h4 style="color: var(--purple); margin: 10px 0;">A. AI Agent 자동 실행 명령어 리스트 (설치 순서대로)</h4>
+    <pre><code># [Step 1] Red Hat OpenShift AI 및 LVM Storage 오퍼레이터 네임스페이스 생성
+oc create namespace open-cluster-management
+oc create namespace redhat-ods-operator
+oc create namespace openshift-storage
+
+# [Step 2] Local Storage Operator (LVM TopoLVM) 설치
+oc apply -f - <<EOF
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: lvms-operator
+  namespace: openshift-storage
+spec:
+  channel: stable-4.14
+  name: lvms-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+EOF
+
+# [Step 3] MinIO S3 Object Storage StatefulSet 배포
+oc create namespace rhoai-doc-pipeline
+oc apply -f minio-statefulset.yaml
+
+# [Step 4] Red Hat OpenShift AI KServe 및 vLLM ServingRuntime 배포
+oc apply -f vllm-cohere-servingruntime.yaml
+oc apply -f cohere-command-inferenceservice.yaml</code></pre>
+
+    <h4 style="color: var(--purple); margin: 20px 0 10px;">B. MinIO StatefulSet YAML 초안 (`minio-statefulset.yaml`)</h4>
+    <pre><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+  namespace: rhoai-doc-pipeline
+spec:
+  serviceName: minio
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: quay.io/minio/minio:RELEASE.2024-01-16T16-07-38Z
+          args: ["server", "/data", "--console-address", ":9001"]
+          env:
+            - name: MINIO_ROOT_USER
+              value: "admin"
+            - name: MINIO_ROOT_PASSWORD
+              value: "MinioAdminPassword123!"
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: topolvm-vg1
+        resources:
+          requests:
+            storage: 2Ti</code></pre>
+  </div>
+
+  <footer>
+    <p>Enterprise Document Intelligence AI Solution Package Proposal</p>
+    <p>© 2026 AI Architecture Engineering Team. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>

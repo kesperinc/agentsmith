@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신규 시장 진입형 엔터프라이즈 AI 솔루션 패키지 제안서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true, theme: 'dark'});</script>
+  <style>
+    :root {
+      --bg-color: #0b0d14;
+      --panel-bg: #121522;
+      --card-bg: #181c2e;
+      --card-border: #262c45;
+      --primary: #00abf0;
+      --accent-gold: #d4af37;
+      --text-main: #f0f3f9;
+      --text-muted: #8b95b5;
+      --success: #00e676;
+      --warning: #ff9100;
+      --blackwell: #76b900;
+      --purple: #ab47bc;
+      --gradient-title: linear-gradient(135deg, #76b900 0%, #00abf0 50%, #ab47bc 100%);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 1450px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; padding: 40px 20px; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; padding: 6px 16px; background: rgba(118, 185, 0, 0.15); border: 1px solid var(--blackwell); color: var(--blackwell); border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    h1 { font-family: var(--font-title); font-size: 2.5rem; font-weight: 800; background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 950px; margin: 0 auto; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+    .card { background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; margin-bottom: 25px; }
+    .card-title { font-family: var(--font-title); font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .card-title .icon { width: 12px; height: 12px; border-radius: 50%; background: var(--blackwell); }
+
+    .alert-box { background: rgba(118, 185, 0, 0.08); border-left: 4px solid var(--blackwell); padding: 18px; border-radius: 8px; margin: 18px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.92rem; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--card-border); }
+    th { background-color: var(--card-bg); color: var(--blackwell); font-weight: 700; font-family: var(--font-title); }
+    .price-tag { font-family: var(--font-title); font-weight: 800; color: var(--accent-gold); font-size: 1.05rem; }
+
+    .mermaid { background: var(--card-bg); padding: 15px; border-radius: 12px; margin: 15px 0; overflow-x: auto; }
+    .cite-box { font-size: 0.82rem; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px dashed var(--card-border); padding: 10px 15px; border-radius: 6px; margin-top: 10px; }
+    footer { text-align: center; margin-top: 50px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 25px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">Next-Gen Market Entry AI Packages</div>
+    <h1>신규 시장 진입형 AI 솔루션 패키지 제안서</h1>
+    <p class="subtitle">2026년 글로벌 엔터프라이즈 AI 동향(Agentic Workflows & Governed AI)을 반영한 신규 사업 기회 패키지</p>
+  </header>
+
+  <!-- Section 1: Market Analysis 2026 -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon"></div>
+      1. 2026년 기업용 AI 글로벌 시장 조사 및 트렌드 분석 (Market Insights)
+    </div>
+    <div class="alert-box">
+      Gartner 및 2026 AI 시장 보고서 분석 결과, 단편적인 단순 챗봇 시대를 지나 **에이전틱 워크플로우(Agentic Workflows)**와 **소버린 AI(Sovereign On-Premise AI)** 시장이 급팽창하고 있습니다.
+    </div>
+    <div class="cite-box">
+      • [시장 트렌드 1] <strong>Agentic Workflows의 보편화</strong>: 2026년 대기업의 60% 이상이 자율형 태스크 수행 에이전트 도입.<br>
+      • [시장 트렌드 2] <strong>Permission-Aware RAG (권한 인지 RAG)</strong>: 단순 검색을 넘어 사내 사원별 직급/부서 RBAC 권한을 반영한 보안 검색 필독화.<br>
+      • [시장 트렌드 3] <strong>소버린 AI (Sovereign AI)</strong>: 금융, 의료, 제조 등 민감 데이터 산업의 100% 에어갭(Air-gapped) 온프레미스 인프라 수요 급증.
+    </div>
+  </div>
+
+  <!-- Section 2: Package #3 - Governed CS/ITSM Support Agent -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--primary);"></div>
+      2. AI 패키지 #3: 엔터프라이즈 거버넌스 CS & ITSM 에이전트 패키지
+    </div>
+    
+    <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 15px;">
+      사내 ITSM(Jira, ServiceNow) 및 고객 CS 센터 상담원을 지원하며, 직원별 보안 권한(RBAC/SSO)을 실시간 검증하는 <strong>Permission-aware Agentic Support System</strong>입니다.
+    </p>
+
+    <div class="grid-2">
+      <div style="background: var(--card-bg); padding: 20px; border-radius: 12px;">
+        <h4 style="color: var(--primary); margin-bottom: 8px;">주요 기능 & 특징</h4>
+        <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 15px;">
+          <li>• SAML/SSO 연동 및 사원 직급별 문서 접근 권한 자동 필터링</li>
+          <li>• Jira / ServiceNow 티켓 자동 생성 및 과거 처리 내역 RAG 검색</li>
+          <li>• Human-in-the-loop (HITL) 승인 프로세스 (중요 조치 시 관리자 승인 게이트)</li>
+        </ul>
+      </div>
+      <div style="background: var(--card-bg); padding: 20px; border-radius: 12px;">
+        <h4 style="color: var(--primary); margin-bottom: 8px;">권장 인프라 & 예상 가격</h4>
+        <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 15px;">
+          <li>• **하드웨어**: Dell R760xa (4x RTX 6000 Blackwell 60GB)</li>
+          <li>• **소프트웨어**: Red Hat OpenShift AI + Cohere Reranker + LangGraph</li>
+          <li>• **1년 차 총 TCO 예산**: <span class="price-tag">약 3.85억 원 (VAT 별도)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Package #4 - Sovereign DevOps & Security Auditor -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon" style="background: var(--purple);"></div>
+      3. AI 패키지 #4: 소버린 멀티에이전트 데브옵스 & 보안 감사 패키지
+    </div>
+
+    <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 15px;">
+      CI/CD 파이프라인 상에서 소스 코드 소버린 보안 감사, OWASP/CVE 취약점 자동 감지, 및 보안 패치 PR을 자동 생성하는 <strong>Autonomous Multi-Agent DevOps Auditor</strong>입니다.
+    </p>
+
+    <div class="mermaid">
+flowchart LR
+    DevPush["개발자 Code Push<br>(GitLab / GitHub)"] --> SecurityAgent["보안 감사 멀티에이전트<br>(RHOAI OpenSource LLM)"]
+    SecurityAgent --> VulnerabilityScan["OWASP / CVE 취약점 분석"]
+    VulnerabilityScan --> AutoFixPR["보안 패치 PR 자동 생성"]
+    AutoFixPR --> LeadApproval["시큐리티 리드 승인 (HITL)"]
+    LeadApproval --> Deploy["온프레미스 K8s 자동 배포"]
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>패키지 솔루션명</th>
+          <th>권장 하드웨어 & GPU</th>
+          <th>핵심 소프트웨어 오케스트레이션</th>
+          <th>1년 차 예상 TCO (VAT 별도)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Governed CS & ITSM Agent (#3)</strong></td>
+          <td>Dell R760xa (4x RTX 6000 Blackwell)</td>
+          <td>OpenShift AI + Cohere + Permission RAG</td>
+          <td><span class="price-tag">385,000,000 원</span></td>
+        </tr>
+        <tr>
+          <td><strong>Sovereign DevOps & Security Auditor (#4)</strong></td>
+          <td>Dell R760 (2x RTX 6000 Blackwell 60GB)</td>
+          <td>OpenShift AI + Qwen2.5-Coder + LangGraph Agent</td>
+          <td><span class="price-tag">145,000,000 원</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <p>New Market Entry AI Solution Packages Proposal</p>
+    <p>© 2026 AI Architecture Engineering Team. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>

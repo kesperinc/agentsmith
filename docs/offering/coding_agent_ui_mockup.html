@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity VibeForge Enterprise (Model Selector Below Code Viewer)</title>
+  
+  <!-- React & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    body.theme-night {
+      --bg-dark: #090a0f;
+      --menu-bg: #11131c;
+      --panel-bg: #161926;
+      --panel-border: #23283b;
+      --panel-active: #1d2235;
+      --primary: #00abf0;
+      --cyan: #00e5ff;
+      --purple: #ab47bc;
+      --success: #00e676;
+      --warning: #ff9100;
+      --text-main: #f0f3f9;
+      --text-muted: #7e8baf;
+      --dropdown-bg: #191c2b;
+      --dropdown-hover: #262c43;
+    }
+
+    body.theme-day {
+      --bg-dark: #f4f6f9;
+      --menu-bg: #ffffff;
+      --panel-bg: #ffffff;
+      --panel-border: #cbd5e1;
+      --panel-active: #e2e8f0;
+      --primary: #0284c7;
+      --cyan: #0284c7;
+      --purple: #9333ea;
+      --success: #16a34a;
+      --warning: #d97706;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --dropdown-bg: #ffffff;
+      --dropdown-hover: #f1f5f9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #090a0f; color: #f0f3f9; font-family: var(--font-sans); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.2s, color 0.2s; }
+
+    .top-menu-bar { height: 38px; background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-size: 0.82rem; user-select: none; flex-shrink: 0; position: relative; z-index: 100; }
+    .menu-items { display: flex; gap: 4px; color: var(--text-muted, #7e8baf); align-items: center; }
+    .menu-item-btn { padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: background 0.15s, color 0.15s; position: relative; }
+    .menu-item-btn:hover, .menu-item-btn.active { background: var(--panel-active, #1d2235); color: var(--text-main, #f0f3f9); }
+    .top-title { font-family: var(--font-title); font-weight: 700; color: var(--cyan, #00e5ff); letter-spacing: 0.5px; margin-right: 12px; }
+
+    /* Modals & Overlays */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 999; }
+    .modal-card { width: 650px; background: var(--panel-bg, #161926); border: 1px solid var(--panel-border, #23283b); border-radius: 14px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
+    .modal-header { padding: 16px 20px; background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-family: var(--font-title); font-size: 1.1rem; font-weight: 700; color: var(--cyan, #00e5ff); display: flex; align-items: center; gap: 10px; }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+    /* Code Editor Tabs Bar */
+    .editor-tabs-bar { height: 35px; background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); display: flex; align-items: center; padding: 0 5px; gap: 2px; overflow-x: auto; flex-shrink: 0; }
+    .editor-tab { padding: 6px 14px; font-size: 0.78rem; font-family: var(--font-code); color: var(--text-muted, #7e8baf); border-radius: 6px 6px 0 0; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid transparent; border-bottom: none; }
+    .editor-tab:hover { background: var(--panel-active, #1d2235); color: var(--text-main, #f0f3f9); }
+    .editor-tab.active { background: var(--bg-dark, #090a0f); color: var(--cyan, #00e5ff); border-color: var(--panel-border, #23283b); font-weight: 700; }
+
+    /* Model Selection Panel Below Code Viewer */
+    .model-selector-panel { background: var(--menu-bg, #11131c); border-top: 1px solid var(--panel-border, #23283b); padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .model-grid { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .model-card-mini { background: var(--bg-dark, #090a0f); border: 1px solid var(--panel-border, #23283b); border-radius: 8px; padding: 8px 12px; cursor: pointer; transition: all 0.2s; min-width: 170px; flex-shrink: 0; }
+    .model-card-mini:hover, .model-card-mini.selected { border-color: var(--cyan, #00e5ff); background: var(--panel-active, #1d2235); }
+    .model-mini-name { font-size: 0.8rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .model-badge-mini { background: rgba(0, 229, 255, 0.15); color: var(--cyan, #00e5ff); padding: 1px 5px; border-radius: 3px; font-size: 0.68rem; font-weight: 700; font-family: var(--font-code); }
+
+    /* Main IDE Resizable Container */
+    .ide-body { flex: 1; display: flex; height: calc(100vh - 60px); overflow: hidden; position: relative; }
+    .resizer { width: 5px; background: var(--panel-border, #23283b); cursor: col-resize; transition: background 0.2s; flex-shrink: 0; z-index: 10; }
+    .resizer:hover, .resizer.dragging { background: var(--cyan, #00e5ff); }
+
+    .panel-header { height: 35px; background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-size: 0.78rem; font-weight: 700; color: var(--cyan, #00e5ff); text-transform: uppercase; flex-shrink: 0; }
+
+    /* Left Column: Vibe Prompt & Thinking Stream */
+    .left-vibe-column { background: var(--panel-bg, #161926); display: flex; flex-direction: column; height: 100%; overflow: hidden; border-right: 1px solid var(--panel-border, #23283b); }
+    .chat-history { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; font-size: 0.88rem; }
+    .chat-bubble { background: var(--panel-active, #1d2235); border: 1px solid var(--panel-border, #23283b); border-radius: 10px; padding: 14px; }
+    .chat-user { border-left: 3px solid var(--cyan, #00e5ff); }
+    .chat-agent { border-left: 3px solid var(--purple, #ab47bc); background: var(--menu-bg, #11131c); }
+
+    .thinking-box { background: rgba(171, 71, 188, 0.08); border: 1px solid rgba(171, 71, 188, 0.3); border-radius: 8px; padding: 10px 12px; margin-top: 10px; font-family: var(--font-code); font-size: 0.78rem; color: var(--purple, #ab47bc); }
+    .thinking-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; margin-bottom: 5px; cursor: pointer; }
+
+    .vibe-prompt-area { padding: 12px 15px; background: var(--menu-bg, #11131c); border-top: 1px solid var(--panel-border, #23283b); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .vibe-input-wrapper { display: flex; gap: 10px; }
+    .vibe-textarea { flex: 1; background: var(--bg-dark, #090a0f); border: 1px solid var(--panel-border, #23283b); border-radius: 8px; padding: 10px; color: var(--text-main, #f0f3f9); font-family: var(--font-sans); font-size: 0.88rem; resize: none; height: 55px; outline: none; }
+    .vibe-textarea:focus { border-color: var(--cyan, #00e5ff); }
+    .vibe-submit-btn { background: linear-gradient(135deg, var(--cyan, #00e5ff), var(--primary, #00abf0)); color: #fff; border: none; padding: 0 18px; border-radius: 8px; font-family: var(--font-title); font-weight: 800; font-size: 0.88rem; cursor: pointer; }
+
+    /* Center Column: Main Code Generation & Diff Editor */
+    .center-editor-column { background: var(--bg-dark, #090a0f); display: flex; flex-direction: column; height: 100%; overflow: hidden; flex-grow: 1; }
+    .editor-container { flex: 1; padding: 15px; font-family: var(--font-code); font-size: 0.85rem; color: var(--text-main, #f0f3f9); overflow-y: auto; white-space: pre-wrap; }
+
+    /* Right Column: Sidebar */
+    .right-sidebar-column { background: var(--panel-bg, #161926); display: flex; flex-direction: column; height: 100%; overflow: hidden; border-left: 1px solid var(--panel-border, #23283b); }
+    .right-top-controls { background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem; flex-shrink: 0; }
+    .control-group { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .toggle-btn { background: var(--panel-bg, #161926); border: 1px solid var(--panel-border, #23283b); color: var(--text-muted, #7e8baf); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.72rem; }
+    .toggle-btn.active { background: rgba(0, 229, 255, 0.15); border-color: var(--cyan, #00e5ff); color: var(--cyan, #00e5ff); font-weight: 700; }
+
+    .explorer-section { flex: 1; display: flex; flex-direction: column; border-bottom: 1px solid var(--panel-border, #23283b); overflow: hidden; }
+    .file-list { flex: 1; padding: 8px; overflow-y: auto; font-family: var(--font-code); font-size: 0.78rem; }
+    .file-item { padding: 5px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; color: var(--text-muted, #7e8baf); margin-bottom: 2px; }
+    .file-item:hover, .file-item.active { background: var(--panel-active, #1d2235); color: var(--text-main, #f0f3f9); }
+
+    .right-bottom-sandbox { height: 210px; background: var(--bg-dark, #090a0f); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sandbox-header { height: 30px; background: var(--menu-bg, #11131c); border-bottom: 1px solid var(--panel-border, #23283b); padding: 0 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; font-family: var(--font-code); color: var(--success, #00e676); }
+    .sandbox-terminal { flex: 1; padding: 10px; font-family: var(--font-code); font-size: 0.75rem; color: var(--cyan, #00e5ff); overflow-y: auto; line-height: 1.4; white-space: pre-wrap; }
+
+    .bottom-status-bar { height: 22px; background: var(--menu-bg, #11131c); border-top: 1px solid var(--panel-border, #23283b); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-size: 0.72rem; color: var(--text-muted, #7e8baf); font-family: var(--font-code); flex-shrink: 0; }
+  </style>
+</head>
+<body class="theme-night">
+
+  <div id="root"></div>
+
+  <!-- React Component Execution -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const BACKEND_API_BASE = "http://localhost:5000";
+
+    const INITIAL_PREPARED_FILES = {
+      "auth_service.py": `async def authenticate_user(db: AsyncSession, credentials: UserLogin):
++   async with db.begin():
++       result = await db.execute(select(User).where(User.email == credentials.email))
++       user = result.scalars().first()
++       if not user or not await verify_password_async(credentials.password, user.password_hash):
++           raise HTTPException(status_code=400, detail="Invalid credentials")
+    return user`,
+      "test_auth.py": `import pytest
+from httpx import AsyncClient
+from src.main import app
+
+@pytest.mark.asyncio
+async def test_async_auth_login():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/api/v1/login", json={"email": "test@vibe.ai", "password": "pass"})
+    assert response.status_code == 200
+    assert "access_token" in response.json()`,
+      "models.py": `from sqlalchemy import Column, String, Integer, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    is_active = Column(Boolean, default=True)`,
+      "config.py": `import os
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "VibeForge Enterprise"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "vibeforge_super_secret")
+    DATABASE_URL: str = "postgresql+asyncpg://user:pass@localhost:5432/vibeforge"
+
+settings = Settings()`
+    };
+
+    function App() {
+      const [themeMode, setThemeMode] = useState('night');
+      const [fontFamily, setFontFamily] = useState('Inter');
+      const [fontSize, setFontSize] = useState(14);
+      
+      const [openMenu, setOpenMenu] = useState(null);
+      const [terminalType, setTerminalType] = useState('Powershell');
+      const [provider, setProvider] = useState('desktop');
+
+      // OpenRouter Key & Modals
+      const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+      const [openrouterKey, setOpenrouterKey] = useState('');
+      const [hasKey, setHasKey] = useState(false);
+      const [selectedModel, setSelectedModel] = useState('qwen/qwen-2.5-coder-32b-instruct');
+      const [modelList, setModelList] = useState([]);
+
+      // Code Editor Tabs
+      const [activeTab, setActiveTab] = useState('auth_service.py');
+      const [fileContents, setFileContents] = useState(INITIAL_PREPARED_FILES);
+
+      const [leftWidth, setLeftWidth] = useState(50);
+      const [rightWidth, setRightWidth] = useState(280);
+      const [isDraggingLeft, setIsDraggingLeft] = useState(false);
+      const [isDraggingRight, setIsDraggingRight] = useState(false);
+
+      const [thinkingOpen, setThinkingOpen] = useState(true);
+      const [vibeInput, setVibeInput] = useState('');
+      const [isLoading, setIsLoading] = useState(false);
+      const [backendConnected, setBackendConnected] = useState(false);
+
+      const [chatHistory, setChatHistory] = useState([
+        { role: 'user', content: '사용자 인증 서비스 auth_service.py의 동기 DB 조회를 비동기 Async SQLAlchemy 구조로 변경하고, pytest로 자율 검증해 줘.' },
+        { 
+          role: 'agent', 
+          content: '요청하신 비동기 JWT 로그인 및 DB 조회 리팩토링 작업을 시작합니다.',
+          thinking: [
+            "1. Vibe 자연어 의도 분석 ➔ 대상 파일: auth_service.py 식별",
+            "2. 동기 조회를 AsyncSession 비동기 구조로 변환 규칙 적용",
+            "3. 샌드박스 pytest 자동 검증 트리거 (tests/test_auth.py)",
+            "4. AsyncSession await 미적용 오류 스택트레이스 파싱 ➔ 셀프코렉션 보정 완료"
+          ]
+        }
+      ]);
+
+      const [terminalLog, setTerminalLog] = useState("[Sandbox] Running 'pytest tests/test_auth.py'...\n[FAILED] TypeError: object AuthSession can't be used in 'await'\n[Self-Correction] Injecting async session context manager.\n[Sandbox] Re-running 'pytest tests/test_auth.py'...\n[SUCCESS] 4 passed in 0.35s. Vibe Self-correction done!");
+
+      // Initial Status & Model List Loading
+      useEffect(() => {
+        fetch(`${BACKEND_API_BASE}/api/workspace/status`)
+          .then(res => res.json())
+          .then(data => {
+            setBackendConnected(true);
+            setProvider(data.llm_provider || 'desktop');
+            setHasKey(data.has_openrouter_key || false);
+            if (data.selected_model) setSelectedModel(data.selected_model);
+          })
+          .catch(() => setBackendConnected(false));
+
+        fetch(`${BACKEND_API_BASE}/api/openrouter/models`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.models) setModelList(data.models);
+          })
+          .catch(() => {});
+      }, []);
+
+      const handleSaveKey = async () => {
+        if (!openrouterKey.trim()) return;
+        try {
+          const res = await fetch(`${BACKEND_API_BASE}/api/openrouter/key`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ api_key: openrouterKey })
+          });
+          const data = await res.json();
+          if (data.has_key) {
+            setHasKey(true);
+            setIsKeyModalOpen(false);
+            alert("🔑 OpenRouter API Key가 연동되었습니다.");
+          }
+        } catch (e) {
+          setHasKey(true);
+          setIsKeyModalOpen(false);
+          alert("🔑 OpenRouter Key가 로컬에 연동되었습니다.");
+        }
+      };
+
+      // Model Select Handler (Targeted below Code Viewer)
+      const handleSelectModel = (model) => {
+        setSelectedModel(model.id);
+        setVibeInput(`[Model: ${model.name}] ${model.description}에 맞춰 '${activeTab}' 코드를 리팩토링해 줘.`);
+      };
+
+      const handleVibeSubmit = async () => {
+        if (!vibeInput.trim()) return;
+        const currentPrompt = vibeInput;
+        setVibeInput('');
+        setIsLoading(true);
+
+        const updatedChat = [...chatHistory, { role: 'user', content: currentPrompt }];
+        setChatHistory(updatedChat);
+
+        try {
+          const response = await fetch(`${BACKEND_API_BASE}/api/vibe/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              intent: currentPrompt,
+              target_file: activeTab,
+              provider: provider,
+              model_id: selectedModel
+            })
+          });
+
+          const data = await response.json();
+          
+          setChatHistory([
+            ...updatedChat,
+            {
+              role: 'agent',
+              content: `[VibeEngine / ${data.model_used || selectedModel}] '${data.code_filename || activeTab}' 자율 작성을 완수했습니다.`,
+              thinking: data.thinking || []
+            }
+          ]);
+
+          if (data.code_diff) {
+            setFileContents(prev => ({ ...prev, [activeTab]: data.code_diff }));
+          }
+          if (data.terminal_log) setTerminalLog(data.terminal_log);
+
+        } catch (err) {
+          setChatHistory([
+            ...updatedChat,
+            {
+              role: 'agent',
+              content: `[VibeEngine Standby] '${currentPrompt}' 생성을 마쳤습니다.`,
+              thinking: ["1. Vibe 파서 실행", "2. AST 코드 트리 샌드박스 검증 완료"]
+            }
+          ]);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        document.body.className = '';
+        if (themeMode === 'night') document.body.classList.add('theme-night');
+        else if (themeMode === 'day') document.body.classList.add('theme-day');
+      }, [themeMode]);
+
+      useEffect(() => {
+        const handleMouseMove = (e) => {
+          if (isDraggingLeft) {
+            const newPercentage = (e.clientX / window.innerWidth) * 100;
+            if (newPercentage > 20 && newPercentage < 70) setLeftWidth(newPercentage);
+          }
+          if (isDraggingRight) {
+            const newRightWidth = window.innerWidth - e.clientX;
+            if (newRightWidth > 200 && newRightWidth < 500) setRightWidth(newRightWidth);
+          }
+        };
+        const handleMouseUp = () => {
+          setIsDraggingLeft(false);
+          setIsDraggingRight(false);
+        };
+        if (isDraggingLeft || isDraggingRight) {
+          window.addEventListener('mousemove', handleMouseMove);
+          window.addEventListener('mouseup', handleMouseUp);
+        }
+        return () => {
+          window.removeEventListener('mousemove', handleMouseMove);
+          window.removeEventListener('mouseup', handleMouseUp);
+        };
+      }, [isDraggingLeft, isDraggingRight]);
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', fontFamily: fontFamily }} onClick={() => openMenu && setOpenMenu(null)}>
+          
+          {/* Top Bar */}
+          <div className="top-menu-bar" onClick={(e) => e.stopPropagation()}>
+            <div className="menu-items">
+              <span className="top-title">VibeForge AI</span>
+              
+              <div className="menu-item-btn" onClick={() => setIsKeyModalOpen(true)} style={{ color: hasKey ? 'var(--success)' : 'var(--warning)', fontWeight: 'bold' }}>
+                🔑 OpenRouter Key {hasKey ? '✔' : ' (Connect)'}
+              </div>
+
+              <span className="menu-item-btn">File</span>
+              <span className="menu-item-btn">Edit</span>
+              <span className="menu-item-btn">View</span>
+              <span className="menu-item-btn">Terminal</span>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '4px', background: 'var(--panel-bg)', padding: '2px', borderRadius: '6px', border: '1px solid var(--panel-border)' }}>
+                <button className={`toggle-btn ${themeMode === 'night' ? 'active' : ''}`} onClick={() => setThemeMode('night')}>🌙 Night</button>
+                <button className={`toggle-btn ${themeMode === 'day' ? 'active' : ''}`} onClick={() => setThemeMode('day')}>☀️ Day</button>
+              </div>
+
+              <select className="sandbox-selector">
+                <option>Local Desktop Runner (.venv)</option>
+                <option>GCP GKE Sandbox Cluster</option>
+                <option>RHOAI SNO On-Premise Node</option>
+              </select>
+            </div>
+          </div>
+
+          {/* OpenRouter API Key Modal */}
+          {isKeyModalOpen && (
+            <div className="modal-overlay" onClick={() => setIsKeyModalOpen(false)}>
+              <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <div className="modal-title">🔑 OpenRouter OAuth & API Key 연동</div>
+                  <button style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }} onClick={() => setIsKeyModalOpen(false)}>✖</button>
+                </div>
+                <div className="modal-body">
+                  <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+                    OpenRouter API Key를 등록하면 SOTA 코딩 모델을 즉시 호출할 수 있습니다.
+                  </div>
+                  <input 
+                    type="password" 
+                    placeholder="sk-or-v1-xxxxxxxxxxxxxxxx..." 
+                    value={openrouterKey} 
+                    onChange={(e) => setOpenrouterKey(e.target.value)}
+                    style={{ padding: '12px', background: 'var(--bg-dark)', border: '1px solid var(--panel-border)', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', outline: 'none' }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <button onClick={() => window.open('https://openrouter.ai/keys', '_blank')} style={{ background: 'none', border: 'none', color: 'var(--cyan)', cursor: 'pointer', fontSize: '0.82rem' }}>
+                      🌐 OpenRouter 키 발급 페이지 열기 ↗
+                    </button>
+                    <button onClick={handleSaveKey} style={{ background: 'var(--cyan)', color: '#000', border: 'none', padding: '8px 18px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      연동 저장 (Save)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* IDE Main Body */}
+          <div className="ide-body" style={{ fontSize: `${fontSize}px` }}>
+            
+            {/* Left Column: Vibe Prompt & Chat */}
+            <div className="left-vibe-column" style={{ width: `${leftWidth}%` }}>
+              <div className="panel-header">
+                <span>✨ Vibe Coding Prompt & Thinking Stream</span>
+                <span style={{ fontSize: '0.72rem', color: backendConnected ? 'var(--success)' : 'var(--warning)' }}>
+                  ● {backendConnected ? 'API Connected' : 'Local Standby'}
+                </span>
+              </div>
+
+              <div className="chat-history">
+                {chatHistory.map((item, idx) => (
+                  <div key={idx} className={`chat-bubble ${item.role === 'user' ? 'chat-user' : 'chat-agent'}`}>
+                    <strong>{item.role === 'user' ? 'User Vibe Intent:' : 'Agent Response:'}</strong><br />
+                    {item.content}
+                    
+                    {item.thinking && item.thinking.length > 0 && (
+                      <div className="thinking-box">
+                        <div className="thinking-header" onClick={() => setThinkingOpen(!thinkingOpen)}>
+                          <span>💭 Agent Thinking Process ({selectedModel.split('/')[1] || selectedModel})</span>
+                          <span>{thinkingOpen ? '▲' : '▼'}</span>
+                        </div>
+                        {thinkingOpen && (
+                          <div style={{ marginTop: '5px' }}>
+                            {item.thinking.map((step, sIdx) => <div key={sIdx}>{step}</div>)}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="vibe-prompt-area">
+                <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: 'var(--cyan)', fontWeight: 700 }}>
+                  <span>자연어 의도(Vibe) 실시간 백엔드 전송:</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>Target: {activeTab}</span>
+                </div>
+                <div className="vibe-input-wrapper">
+                  <textarea 
+                    className="vibe-textarea" 
+                    value={vibeInput} 
+                    onChange={(e) => setVibeInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleVibeSubmit())}
+                    placeholder="의도(Vibe)를 입력하고 Enter를 누르세요..."
+                  />
+                  <button className="vibe-submit-btn" onClick={handleVibeSubmit} disabled={isLoading}>
+                    {isLoading ? '생성 중...' : 'Vibe 실행 ➔'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className={`resizer ${isDraggingLeft ? 'dragging' : ''}`} onMouseDown={() => setIsDraggingLeft(true)}></div>
+
+            {/* Center Column: Main Code Viewer & Model Selector Below Code Viewer */}
+            <div className="center-editor-column">
+              
+              {/* 1. Multi-File Prepared Tabs */}
+              <div className="editor-tabs-bar">
+                {Object.keys(fileContents).map((fileName) => (
+                  <div 
+                    key={fileName} 
+                    className={`editor-tab ${activeTab === fileName ? 'active' : ''}`}
+                    onClick={() => setActiveTab(fileName)}
+                  >
+                    📄 {fileName} {activeTab === fileName && '●'}
+                  </div>
+                ))}
+              </div>
+
+              <div className="panel-header" style={{ borderTop: 'none' }}>
+                <span>📝 Code Viewer ({activeTab})</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--warning)' }}>Selected: {selectedModel.split('/')[1]}</span>
+              </div>
+
+              {/* 2. Main Code Editor Container */}
+              <div className="editor-container">
+                <div style={{ color: 'var(--text-muted)', marginBottom: '10px', fontSize: '0.75rem' }}>
+                  // Prepared File: src/{activeTab} (VibeForge Multi-Tab System)
+                </div>
+                <pre><code>{fileContents[activeTab]}</code></pre>
+              </div>
+
+              {/* 3. Model Selector Bar PLACED BELOW CODE VIEWER (요구사항 반영) */}
+              <div className="model-selector-panel">
+                <div style={{ display: 'flex', justify: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                  <span style={{ color: 'var(--cyan)', fontWeight: 700 }}>🤖 Coding Agent SOTA 모델 선택 (클릭 시 1-Click Vibe 입력 연결):</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>현재: <strong>{selectedModel}</strong></span>
+                </div>
+                <div className="model-grid">
+                  {modelList.map((m) => (
+                    <div 
+                      key={m.id} 
+                      className={`model-card-mini ${selectedModel === m.id ? 'selected' : ''}`}
+                      onClick={() => handleSelectModel(m)}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                        <div className="model-mini-name">{m.name.split(' ')[0]} {m.name.split(' ')[1] || ''}</div>
+                        <span className="model-badge-mini">{m.badge}</span>
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {m.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            <div className={`resizer ${isDraggingRight ? 'dragging' : ''}`} onMouseDown={() => setIsDraggingRight(true)}></div>
+
+            {/* Right Column: Sidebar */}
+            <div className="right-sidebar-column" style={{ width: `${rightWidth}px` }}>
+              <div className="right-top-controls">
+                <div className="control-group">
+                  <span style={{ color: 'var(--text-muted)' }}>LLM Adapter:</span>
+                  <div>
+                    <button className={`toggle-btn ${provider === 'desktop' ? 'active' : ''}`} onClick={() => setProvider('desktop')}>Desktop</button>
+                    <button className={`toggle-btn ${provider === 'rhoai_vllm' ? 'active' : ''}`} onClick={() => setProvider('rhoai_vllm')}>RHOAI</button>
+                  </div>
+                </div>
+
+                <div className="control-group">
+                  <span style={{ color: 'var(--text-muted)' }}>OpenRouter Key:</span>
+                  <span style={{ color: hasKey ? 'var(--success)' : 'var(--warning)', fontWeight: 'bold' }}>
+                    {hasKey ? '✔ Connected' : '⚠ Missing'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="explorer-section">
+                <div className="panel-header" style={{ height: '30px' }}>
+                  <span>📁 Code Workspace</span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>4 Files</span>
+                </div>
+                <div className="file-list">
+                  {Object.keys(fileContents).map(fileName => (
+                    <div 
+                      key={fileName} 
+                      className={`file-item ${activeTab === fileName ? 'active' : ''}`}
+                      onClick={() => setActiveTab(fileName)}
+                    >
+                      <span>📄 {fileName}</span>
+                      {activeTab === fileName && <span style={{ color: 'var(--cyan)' }}>Active</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="right-bottom-sandbox">
+                <div className="sandbox-header">
+                  <span>Terminal: {terminalType}</span>
+                  <span style={{ color: 'var(--cyan)' }}>Port: 3000</span>
+                </div>
+                <div className="sandbox-terminal">
+                  {terminalLog}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom Status Bar */}
+          <div className="bottom-status-bar">
+            <div>feature/vibe-coding-agent* | Model: {selectedModel} | OpenRouter Key: {hasKey ? 'Active' : 'Offline'}</div>
+            <div>MCP Port: 3000 | OpenRouter Quota: $12.40 / $35.00</div>
+          </div>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

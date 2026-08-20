@@ -20,7 +20,7 @@ if %errorlevel% equ 0 (
 
 :: 2. Override PATH with built-in Node v18, inject proxy mirrors, and launch Desktop Client
 echo [*] Launching Desktop Client...
-set PATH=C:\dev\antigravity-workspace\aifullstack\agentsmith\build\node;%PATH%
+set PATH=%~dp0build\node;%PATH%
 set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
 set NODEJS_ORG_MIRROR=http://localhost:8999/
 set NODE_TLS_REJECT_UNAUTHORIZED=0

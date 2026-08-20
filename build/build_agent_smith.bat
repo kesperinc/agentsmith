@@ -6,8 +6,7 @@ echo Agent Smith IDE - 1-Click VS Code Fork and Gulp Builder
 echo =================================================================
 echo.
 
-set BASE_DIR=%~dp0..\..
-set AGENT_SMITH_DIR=%BASE_DIR%\agentsmith
+set AGENT_SMITH_DIR=%~dp0..
 set VSCODE_DIR=%AGENT_SMITH_DIR%\vscode
 set PATCHES_DIR=%AGENT_SMITH_DIR%\patches
 set BUILD_DIR=%AGENT_SMITH_DIR%\build

@@ -9,7 +9,14 @@ import sqlite3
 import datetime
 from typing import Dict, Any, List, Optional
 
-MEM_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".agentsmith", "mem0_memory.db")
+def _resolve_mem_db_path() -> str:
+    if os.getenv("AGENTSMITH_DATA_DIR"):
+        return os.path.join(os.getenv("AGENTSMITH_DATA_DIR"), "mem0_memory.db")
+    if os.getenv("AGENTSMITH_WORKSPACE_ROOT"):
+        return os.path.join(os.getenv("AGENTSMITH_WORKSPACE_ROOT"), ".agentsmith", "mem0_memory.db")
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".agentsmith", "mem0_memory.db")
+
+MEM_DB_PATH = _resolve_mem_db_path()
 
 class Mem0Manager:
     def __init__(self, db_path: str = MEM_DB_PATH):

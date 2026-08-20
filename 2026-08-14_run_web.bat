@@ -24,7 +24,7 @@ powershell -Command "Get-NetTCPConnection -LocalPort 9095 -ErrorAction SilentlyC
 
 :: 3. Override PATH with built-in Node v18 and launch Web Editor in a new window (Bypass input redirection error)
 echo [*] Launching Web Editor Server (Port 9095)...
-set PATH=C:\dev\antigravity-workspace\aifullstack\agentsmith\build\node;%PATH%
+set PATH=%~dp0build\node;%PATH%
 cd vscode
 start "" cmd.exe /c "node scripts\code-web.js --port 9095"
 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise AI Solution Packages Proposal Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0d14;
+      --panel-bg: #121522;
+      --card-bg: #181c2e;
+      --card-border: #262c45;
+      --primary: #00abf0;
+      --accent-red: #ee0000;
+      --accent-gold: #d4af37;
+      --text-main: #f0f3f9;
+      --text-muted: #8b95b5;
+      --blackwell: #76b900;
+      --intel-blue: #0071c5;
+      --cyan: #00e5ff;
+      --purple: #ab47bc;
+      --gradient-title: linear-gradient(135deg, #00abf0 0%, #ee0000 33%, #0071c5 66%, #d4af37 100%);
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-title: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 40px 20px; }
+    .container { max-width: 1450px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 40px; padding: 50px 20px; background: var(--panel-bg); border: 1px solid var(--card-border); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; padding: 6px 18px; background: rgba(0, 171, 240, 0.15); border: 1px solid var(--primary); color: var(--primary); border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+    h1 { font-family: var(--font-title); font-size: 2.7rem; font-weight: 800; background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+    .subtitle { color: var(--text-muted); font-size: 1.15rem; max-width: 900px; margin: 0 auto; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .pkg-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 30px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .pkg-card:hover { transform: translateY(-6px); border-color: var(--primary); box-shadow: 0 12px 30px rgba(0, 171, 240, 0.2); }
+    .pkg-card.red:hover { border-color: var(--accent-red); box-shadow: 0 12px 30px rgba(238, 0, 0, 0.2); }
+    .pkg-card.cyan:hover { border-color: var(--cyan); box-shadow: 0 12px 30px rgba(0, 229, 255, 0.2); }
+    .pkg-card.bw:hover { border-color: var(--blackwell); box-shadow: 0 12px 30px rgba(118, 185, 0, 0.2); }
+    .pkg-card.intel:hover { border-color: var(--intel-blue); box-shadow: 0 12px 30px rgba(0, 113, 197, 0.2); }
+
+    .pkg-title { font-family: var(--font-title); font-size: 1.5rem; font-weight: 700; color: #ffffff; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .pkg-desc { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.55; }
+    .pkg-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-title); font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+    .pkg-card.red .pkg-btn { color: #ff5252; }
+    .pkg-card.cyan .pkg-btn { color: var(--cyan); }
+    .pkg-card.bw .pkg-btn { color: var(--blackwell); }
+    .pkg-card.intel .pkg-btn { color: #00aeef; }
+
+    footer { text-align: center; margin-top: 60px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border); padding-top: 30px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">Enterprise AI Solution Proposal Portal</div>
+    <h1>AI Full Stack 시범 솔루션 제안서 포털</h1>
+    <p class="subtitle">Red Hat & Intel 10월/11월 행사 부스 전시 Pilot Solution, 기업 문서 파이프라인 및 코딩 에이전트 통합 제안</p>
+  </header>
+
+  <div class="grid-2">
+    <!-- Card -1: NVIDIA AI Factory vs MZC AI Fullstack (NEW) -->
+    <a href="nvidia_ai_factory_vs_mzc_fullstack_comparison.html" class="pkg-card bw" style="border-color: var(--blackwell); grid-column: 1 / -1; background: linear-gradient(135deg, #121522 0%, #151f28 100%);">
+      <div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+          <span style="color: var(--blackwell); font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">⚡ NVIDIA AI Factory</span>
+          <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+          <span style="color: var(--primary); font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">🌐 MZC Sovereign Fullstack</span>
+          <span style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 12px; margin-left: 8px;">2026.08 STRATEGIC OFFERING</span>
+        </div>
+        <div class="pkg-title" style="font-size: 1.7rem; color: #ffffff;">엔비디아 AI Factory Stack vs MZC AI Fullstack 비교 및 오퍼링 가이드 <span>→</span></div>
+        <p class="pkg-desc" style="font-size: 0.96rem; color: #c4cbe2; margin-bottom: 15px;">
+          • <strong>엔비디아 AI 팩토리 5계층</strong>: DGX SuperPOD / Spectrum-X / DGX OS / Run:ai / NVAIE / NIM / NeMo Framework 심층 해부<br>
+          • <strong>MZC 소버린 7-Layer AI</strong>: Nutanix NCI(무상 AHV) + NKP / Red Hat OpenShift AI / Databricks / Zero-Trust 완전 폐쇄망(Air-Gap)<br>
+          • <strong>7대 핵심 레이어 1:1 정밀 비교 & TCO 최적화</strong>: VMware 대체, 클라우드 송환(Repatriation), 11단계 Small Start/Fast Start 로드맵
+        </p>
+      </div>
+      <div class="pkg-btn" style="color: var(--blackwell); font-size: 1.05rem;">엔비디아 AI Factory vs MZC 풀스택 비교 제안서 보기 ➔</div>
+    </a>
+
+    <!-- Card 0: Exhibition Pilot Solution -->
+    <a href="exhibition_pilot_solution_proposal.html" class="pkg-card red">
+      <div>
+        <div style="color: #ff5252; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Exhibition Pilot Plan</div>
+        <div class="pkg-title">10월 Red Hat & 11월 Intel 행사 시연 솔루션 <span>→</span></div>
+        <p class="pkg-desc">
+          • <strong>10월 Red Hat 행사</strong>: OpenShift AI (SNO) 기반 Coding Agent & MCP 연동 데모 (AWS ROSA Cloud 350만 원)<br>
+          • <strong>11월 Intel 행사</strong>: Intel Gaudi 2/3 & Articul8 AI 기반 CAD 도면/센서 예지보전 데모 (AWS DL1 Cloud 400만 원)<br>
+          • 초저가 실물 PoC Suit vs AWS/GCP 터미널 시연 방식 비교 및 MVP 개발 예산 산출서
+        </p>
+      </div>
+      <div class="pkg-btn" style="color: #ff5252;">행사 전시 시연 계획서 보기 ➔</div>
+    </a>
+
+    <!-- Card 1: Document Pipeline -->
+    <a href="document_pipeline_solution_proposal.html" class="pkg-card">
+      <div>
+        <div style="color: var(--primary); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Package #1</div>
+        <div class="pkg-title">기업 문서 파이프라인 패키지 <span>→</span></div>
+        <p class="pkg-desc">
+          • 기업 보유 문서를 파이프라인 태워 저장하고 사내 업무를 지원하는 RAG 시스템<br>
+          • RTX Pro Blackwell 공랭식 → B200 Air → DLC (Direct Liquid Cooling - 수랭식) 3단계 GPU 확장<br>
+          • Cohere/Articul8 연동 + Red Hat OS/RHOAI + LVM/MinIO → Ceph 확장 + Observability 별 견적
+        </p>
+      </div>
+      <div class="pkg-btn">문서 파이프라인 제안서 보기 ➔</div>
+    </a>
+
+    <!-- Card 2: Coding Agent -->
+    <a href="coding_agent_solution_proposal.html" class="pkg-card cyan">
+      <div>
+        <div style="color: var(--cyan); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Package #2</div>
+        <div class="pkg-title">엔터프라이즈 코딩 에이전트 패키지 <span>→</span></div>
+        <p class="pkg-desc">
+          • RHEL + RHOAI + Qwen2.5-Coder 기반 보안 완결형 사내 코딩 시스템<br>
+          • MCP (Model Context Protocol) 및 Continue.dev IDE / Jupyter / VS Code / Agentic CLI 연동 SI<br>
+          • <strong>Codex, Claude Code, Antigravity CLI MCP 연동 기술 검증</strong> & 사용자 규모별(10명~1,000명) 예산표
+        </p>
+      </div>
+      <div class="pkg-btn">코딩 에이전트 제안서 보기 ➔</div>
+    </a>
+
+    <!-- Card 3: Articul8 AI Package -->
+    <a href="articul8_ai_package_proposal.html" class="pkg-card intel">
+      <div>
+        <div style="color: #00aeef; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Package #5 (Industrial AI)</div>
+        <div class="pkg-title">Articul8 AI 산업 특화 패키지 <span>→</span></div>
+        <p class="pkg-desc">
+          • Intel 스핀오프 GenAI 플랫폼: <strong>Model Mesh Orchestrator & Knowledge Graph Substrate</strong><br>
+          • <strong>적용 분야</strong>: 스마트 제조 CAD 도면 해석, 플랜트 센서 예지보전, 금융 컴플라이언스 심사, 방산 에어갭 정비<br>
+          • <strong>최소 사양 & 예산</strong>: Intel Gaudi 2/3 및 4x Blackwell 60GB 기반 1년 TCO 약 3.8억~3.9억 원
+        </p>
+      </div>
+      <div class="pkg-btn" style="color: #00aeef;">Articul8 AI 제안서 보기 ➔</div>
+    </a>
+
+    <!-- Card 4: Additional Market Solutions -->
+    <a href="additional_ai_market_solutions.html" class="pkg-card bw">
+      <div>
+        <div style="color: var(--blackwell); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Next-Gen Market Entry</div>
+        <div class="pkg-title">신규 시장 진입형 AI 패키지 <span>→</span></div>
+        <p class="pkg-desc">
+          • 2026년 에이전틱 AI (Agentic Workflows) & 소버린 AI 동향 반영<br>
+          • <strong>패키지 #3</strong>: Governed CS & ITSM Support Agent (권한 인지 Permission RAG)<br>
+          • <strong>패키지 #4</strong>: Autonomous Multi-Agent DevOps & Security Auditor (보안 감사 에이전트)
+        </p>
+      </div>
+      <div class="pkg-btn">신규 시장 진입 패키지 보기 ➔</div>
+    </a>
+
+    <!-- Card 5: Full Stack Master Proposal -->
+    <a href="on_premise_ai_full_stack_master_proposal.html" class="pkg-card">
+      <div>
+        <div style="color: var(--accent-gold); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 8px;">Comprehensive Master</div>
+        <div class="pkg-title">온프레미스 AI 풀스택 종합 마스터 문서 <span>→</span></div>
+        <p class="pkg-desc">
+          • 전체 5개 단계별 TCO 예산안 (상용 H100 10.8억 원 ~ 코딩전용 PoC 9,800만 원) 종합 비교표<br>
+          • Single Node OpenShift (SNO) 기술 검증, Cohere 양자화, vLLM KServe YAML 스크립트 모음<br>
+          • SAGE (Semantic/Agentic Engine) 연동 파이프라인 전체 아키텍처
+        </p>
+      </div>
+      <div class="pkg-btn" style="color: var(--accent-gold);">종합 마스터 제안서 보기 ➔</div>
+    </a>
+  </div>
+
+  <footer>
+    <p>Dell / NVIDIA / Intel / Red Hat OpenShift AI Proposal Portal</p>
+    <p>© 2026 AI Architecture Engineering Team. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>
