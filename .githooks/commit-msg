@@ -1,0 +1,35 @@
+#!/bin/sh
+# ============================================================
+# Agent Smith Branch Guardrail - commit-msg hook
+# Blocks direct commits to main and staging.
+# Merge commits (git merge --no-ff) are always allowed.
+# ============================================================
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+# Allow merge commits unconditionally (MERGE_HEAD exists during git merge)
+if [ -f "$(git rev-parse --git-dir)/MERGE_HEAD" ]; then
+  exit 0
+fi
+
+# Block direct commits to main
+if [ "$BRANCH" = "main" ]; then
+  echo ""
+  echo "[GUARDRAIL] Direct commit to 'main' is not allowed."
+  echo "  Branch strategy: feature/* --> staging --> main"
+  echo "  Create a feature branch: git checkout -b feature/<name>"
+  echo ""
+  exit 1
+fi
+
+# Block direct commits to staging
+if [ "$BRANCH" = "staging" ]; then
+  echo ""
+  echo "[GUARDRAIL] Direct commit to 'staging' is not allowed."
+  echo "  Only merge commits from feature/* are allowed on staging."
+  echo "  Create a feature branch: git checkout -b feature/<name>"
+  echo ""
+  exit 1
+fi
+
+exit 0
