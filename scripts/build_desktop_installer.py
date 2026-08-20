@@ -69,11 +69,37 @@ namespace AgentSmithInstaller
         {
             try
             {
-                string targetDir = Path.Combine(
+                // Long Path OS 레지스트리 지원 점검 및 활성화 시도
+                EnsureLongPathSupport();
+
+                string defaultTarget = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "Programs",
                     "AgentSmith"
                 );
+
+                string targetDir = defaultTarget;
+
+                // 경로가 너무 길거나 사용자명이 장문인 경우 단축 경로(C:\AgentSmith) 제안
+                if (defaultTarget.Length > 55)
+                {
+                    DialogResult pathChoice = MessageBox.Show(
+                        "현재 Windows 사용자 계정 경로가 길어 Windows MAX_PATH(260자) 제한을 예방하기 위해\n" +
+                        "단축 설치 경로(C:\\AgentSmith)에 설치하는 것을 권장합니다.\n\n" +
+                        "기본 경로: " + defaultTarget + " (" + defaultTarget.Length + "자)\n" +
+                        "권장 단축 경로: C:\\AgentSmith\n\n" +
+                        "[예(Yes)] 권장 단축 경로(C:\\AgentSmith)에 설치\n" +
+                        "[아니오(No)] 기본 AppData 경로에 설치",
+                        "Agent Smith 설치 경로 최적화 안내",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (pathChoice == DialogResult.Yes)
+                    {
+                        targetDir = @"C:\AgentSmith";
+                    }
+                }
 
                 bool isAlreadyInstalled = Directory.Exists(targetDir) && (
                     File.Exists(Path.Combine(targetDir, "run_agentsmith_desktop.bat")) ||
@@ -260,6 +286,25 @@ namespace AgentSmithInstaller
             {
                 MessageBox.Show("설치 중 오류가 발생했습니다:\n\n" + ex.Message, "설치 오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private static void EnsureLongPathSupport()
+        {
+            try
+            {
+                using (var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\FileSystem", true))
+                {
+                    if (key != null)
+                    {
+                        object val = key.GetValue("LongPathsEnabled");
+                        if (val == null || Convert.ToInt32(val) != 1)
+                        {
+                            key.SetValue("LongPathsEnabled", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                        }
+                    }
+                }
+            }
+            catch { }
         }
 
         private static void KillLockedProcesses(string targetDir)

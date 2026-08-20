@@ -28,6 +28,10 @@
   - [x] 에이전트 빌더, 코딩 에이전트 분석, 루프 운영 가이드 등 12종 가이드 복사 (`docs/guides/`)
   - [x] 전체 개요 문서 복사 (`docs/AI_FULLSTACK_OVERVIEW.md`)
   - [x] 상위 문서 이관 및 현행화 명세서 작성 ([2026-08-20_parent_docs_migration_and_sync_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_parent_docs_migration_and_sync_spec.md))
+- [x] **Windows 긴 파일 경로(Long Path/MAX_PATH) 및 깊은 폴더명 대응 방안 수립**:
+  - [x] 5대 계층 방어 아키텍처 가이드 수립 ([2026-08-20_long_path_and_deep_folder_mitigation_guide.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/2026-08-20_long_path_and_deep_folder_mitigation_guide.md))
+  - [x] C# 인스톨러에 `LongPathsEnabled` 레지스트리 자동 점검 및 `\\?\` 접두사, `C:\AgentSmith` 단축 경로 추천 다이얼로그 탑재
+  - [x] 긴 경로 대응 상세명세서 작성 ([2026-08-20_long_path_and_installer_mitigation_spec.md](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/coding-agent/docs/specs/2026-08-20_long_path_and_installer_mitigation_spec.md))
 - [x] **C# Native 1-Click 단일 실행 설치 바이너리 컴파일 완료**:
   - [x] [`dist/AgentSmith_Desktop_Setup_v1.0.0.exe`](file:///c:/dev/antigravity-workspace/aifullstack/agentsmith/dist/AgentSmith_Desktop_Setup_v1.0.0.exe) (564.21 MB) 구축 완료
 - [x] **통합 인수인계 보고서 작성**:
