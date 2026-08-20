@@ -1,9 +1,9 @@
-# Agent Smith Workspace Syncthing Ignore Rules (.stignore)
-# UTF-8 BOM-less Encoding
+// Syncthing Ignore Rules for agentsmith workspace
+// UTF-8 BOM-less | Updated: 2026-08-20
 
-# ==========================================
-# 1. OS & Syncthing Metadata Files
-# ==========================================
+// ==========================================
+// 1. OS & Syncthing Metadata Files
+// ==========================================
 (?d).DS_Store
 (?d)Desktop.ini
 (?d)thumbs.db
@@ -11,9 +11,10 @@
 (?d).stversions
 (?d).syncthing.*.tmp
 
-# ==========================================
-# 2. Developer Binaries & Installer Tools
-# ==========================================
+// ==========================================
+// 2. Developer Binaries & Installer Tools
+// (대용량 바이너리 - 동기화 제외)
+// ==========================================
 vs_BuildTools.exe
 *.exe
 *.dll
@@ -29,9 +30,10 @@ vs_BuildTools.exe
 *.dmg
 *.iso
 
-# ==========================================
-# 3. Dependencies & Virtual Environments
-# ==========================================
+// ==========================================
+// 3. Dependencies & Virtual Environments
+// (패키지 매니저로 복원 가능 - 제외)
+// ==========================================
 node_modules/
 .venv/
 venv/
@@ -40,10 +42,10 @@ __pycache__/
 *.pyc
 *.pyo
 
-# ==========================================
-# 4. Build Outputs & Release Artifacts
-# ==========================================
-out/
+// ==========================================
+// 4. Build Outputs & Release Artifacts
+// (빌드 산출물 - 재빌드 가능하므로 제외)
+// ==========================================
 dist/
 build/
 .cache/
@@ -54,9 +56,14 @@ coverage/
 *.tgz
 *.7z
 
-# VSCode Client Build & Temporary Artifacts
+// ==========================================
+// 5. VSCode Client Build Artifacts
+// (대용량 컴파일 결과물 - 제외)
+// ==========================================
+VSCode-win32-x64/
 vscode/.build/
 vscode/out/
+vscode/out-vscode/
 vscode/out-build/
 vscode/node_modules/
 vscode/cli/target/
@@ -65,18 +72,22 @@ vscode/extensions/**/dist/
 vscode/extensions/**/out/
 vscode/.vscode-test/
 
-# Backup & Temporary Folders
+// ==========================================
+// 6. Backup & Temporary Folders
+// ==========================================
 _backup_untracked*/
 
-# ==========================================
-# 5. Environment Secrets & Logs
-# ==========================================
+// ==========================================
+// 7. Environment Secrets & Logs
+// ==========================================
 .env
 .env.local
 *.key
 *.log
 
-# Agent Smith Local Persistence Database
-# Only allow configuration file, ignore local qdrant database storage
-!.agentsmith/mem0_config.json
-.agentsmith/
+// ==========================================
+// 8. Agent Smith Local Persistence DB
+// (mem0_config.json 설정 파일만 동기화)
+// ==========================================
+.agentsmith/local.db
+.agentsmith/qdrant_storage/
