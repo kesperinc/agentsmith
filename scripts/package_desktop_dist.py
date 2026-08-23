@@ -21,10 +21,39 @@ print(f"[Agent Smith] Starting Desktop Distribution Build...")
 print(f"Target Directory: {DIST_DIR}")
 print(f"==================================================")
 
+import subprocess
+
+# 0. Kill any running standalone AgentSmith or dist python processes to unlock files
+try:
+    if os.name == 'nt':
+        subprocess.run(['taskkill', '/F', '/IM', 'AgentSmith.exe', '/T'], capture_output=True)
+        subprocess.run(['taskkill', '/F', '/IM', 'agentsmith_app.exe', '/T'], capture_output=True)
+except Exception:
+    pass
+
+def safe_copytree(src: Path, dst: Path, ignore=None):
+    dst.mkdir(parents=True, exist_ok=True)
+    for item in src.iterdir():
+        if ignore and ignore(str(src), [item.name]):
+            continue
+        d = dst / item.name
+        if item.is_dir():
+            safe_copytree(item, d, ignore)
+        else:
+            try:
+                shutil.copy2(item, d)
+            except Exception as e:
+                # If file locked and already exists, keep existing
+                if not d.exists():
+                    print(f"    [!] Warning: Failed to copy {item.name}: {e}")
+
 # 1. Clean / Prepare Target Directory
 if DIST_DIR.exists():
-    print(f"[*] Removing existing dist directory...")
-    shutil.rmtree(DIST_DIR, ignore_errors=True)
+    print(f"[*] Cleaning dist directory...")
+    try:
+        shutil.rmtree(DIST_DIR, ignore_errors=True)
+    except Exception:
+        pass
 
 DIST_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -36,7 +65,7 @@ APP_DEST = DIST_DIR / "app"
 
 if ELECTRON_SRC.exists():
     print(f"[*] Copying Electron Runtime Binaries from {ELECTRON_SRC} to {APP_DEST}...")
-    shutil.copytree(ELECTRON_SRC, APP_DEST, symlinks=True, dirs_exist_ok=True)
+    safe_copytree(ELECTRON_SRC, APP_DEST)
 
     # Prepare Pure Unpacked Resources/App Directory
     RESOURCES_APP_DEST = APP_DEST / "resources" / "app"
@@ -78,10 +107,10 @@ if ELECTRON_SRC.exists():
     AGY_MODULE_SRC = Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "Antigravity IDE" / "resources" / "app" / "node_modules"
     if AGY_MODULE_SRC.exists():
         print(f"[*] Copying full working unpacked node_modules from {AGY_MODULE_SRC}...")
-        shutil.copytree(AGY_MODULE_SRC, RESOURCES_APP_DEST / "node_modules", dirs_exist_ok=True)
+        safe_copytree(AGY_MODULE_SRC, RESOURCES_APP_DEST / "node_modules")
     elif (VSCODE_DIR / "node_modules").exists():
         print(f"[*] Copying full node_modules/ directory from vscode/node_modules...")
-        shutil.copytree(VSCODE_DIR / "node_modules", RESOURCES_APP_DEST / "node_modules", dirs_exist_ok=True)
+        safe_copytree(VSCODE_DIR / "node_modules", RESOURCES_APP_DEST / "node_modules")
 
     # Ensure conpty.node in Release directory
     PTY_UNPACKED_DEST = RESOURCES_APP_DEST / "node_modules" / "node-pty" / "build" / "Release"
@@ -94,7 +123,7 @@ if ELECTRON_SRC.exists():
     for pty_src in PTY_SOURCES:
         if pty_src.exists() and (pty_src / "conpty.node").exists():
             print(f"[*] Ensuring terminal conpty.node binaries from {pty_src}...")
-            shutil.copytree(pty_src, PTY_UNPACKED_DEST, dirs_exist_ok=True)
+            safe_copytree(pty_src, PTY_UNPACKED_DEST)
             break
 
     # Create extensionless alias for all .node native binary files to prevent CJS resolution issues
@@ -207,11 +236,10 @@ CODING_AGENT_SRC = ROOT_DIR / "coding-agent"
 CODING_AGENT_DEST = DIST_DIR / "coding-agent"
 
 print(f"[*] Copying coding-agent backend engine...")
-shutil.copytree(
+safe_copytree(
     CODING_AGENT_SRC, 
     CODING_AGENT_DEST, 
-    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache", ".git"),
-    dirs_exist_ok=True
+    ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache", ".git")
 )
 
 # 4. Copy .venv Python Environment
@@ -220,15 +248,11 @@ VENV_DEST = DIST_DIR / ".venv"
 
 if VENV_SRC.exists():
     print(f"[*] Copying .venv Python virtual environment...")
-    try:
-        shutil.copytree(
-            VENV_SRC,
-            VENV_DEST,
-            ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
-            dirs_exist_ok=True
-        )
-    except Exception as e:
-        print(f"    [!] Note: Some locked venv files were skipped ({e}), core virtualenv structure preserved.")
+    safe_copytree(
+        VENV_SRC,
+        VENV_DEST,
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc")
+    )
 
 # 5. Copy .agentsmith Mem0 Config
 AGENTSMITH_SRC = ROOT_DIR / ".agentsmith"
@@ -236,7 +260,7 @@ AGENTSMITH_DEST = DIST_DIR / ".agentsmith"
 
 if AGENTSMITH_SRC.exists():
     print(f"[*] Copying .agentsmith configuration...")
-    shutil.copytree(AGENTSMITH_SRC, AGENTSMITH_DEST, dirs_exist_ok=True)
+    safe_copytree(AGENTSMITH_SRC, AGENTSMITH_DEST)
 
 # 6. Copy Brand Logo Resources (docs/images/)
 IMAGES_SRC = ROOT_DIR / "docs" / "images"
@@ -257,9 +281,9 @@ EXTENSION_DEST2 = APP_DEST / "resources" / "app" / "extensions" / "agentsmith-ch
 
 if EXTENSION_SRC.exists():
     print(f"[*] Copying built-in Agent Smith Studio extension ({EXTENSION_SRC})...")
-    shutil.copytree(EXTENSION_SRC, EXTENSION_DEST1, dirs_exist_ok=True)
+    safe_copytree(EXTENSION_SRC, EXTENSION_DEST1)
     if APP_DEST.exists():
-        shutil.copytree(EXTENSION_SRC, EXTENSION_DEST2, dirs_exist_ok=True)
+        safe_copytree(EXTENSION_SRC, EXTENSION_DEST2)
     print(f"[ok] Embedded Agent Smith Studio extension into production extensions directory.")
 
 # 7. Copy Launchers if exist
