@@ -2,21 +2,19 @@
 
 본 문서는 **Agent Smith IDE (Custom Code-OSS AI Editor)**의 개발 과제 및 릴리즈 로드맵 현행화 목록입니다. 로컬 데스크톱 중심의 IDE 빌드, 브랜딩, 가드레일, 온프레미스 배포 호환성 확보 및 CLI/IDE 연동 기능에 집중하도록 작성되었습니다.
 
-* **최종 현행화 일자**: 2026년 8월 21일
-* **검증 시스템**: `MZC_SUNKIM317_L` (Windows 11 x64, Python 3.14, Node v24.14.1, Bun 1.3.11, uv 0.11.19)
+* **최종 현행화 일자**: 2026년 8월 23일
+* **검증 시스템**: `MZC_SUNKIM317_L` / `HOME_SUNKIM` (Windows 11 x64, Python 3.14, Node v24.14.1, Bun 1.3.11, uv 0.11.19)
 * **개발 기조**: Windows 빌드 및 기능 완성을 최우선(Phase 1)으로 진행하며, **Antigravity 스타일 아티팩트/챗 패널 및 지능형 코어 엔진 고도화(Phase 2 - 완료)**, **리눅스/온프레미스 Red Hat 배포 호환성(Phase 3)** 및 **AI Full Stack 세일즈 오퍼링(NVIDIA/Dell/MZC 비교 포털 & 4-Phase 로드맵)**을 전사 지원합니다.
 
 ---
 
-## 🎯 0단계: PC 저장소 현행화, 바이너리 표준 운영 지침(SOG) & 장애 해결 (완료 - 2026-08-21)
-- [x] **타 PC 작업내역 수령 및 저장소 현행화 (호스트: MZC_SUNKIM317_L)**:
-  - [x] 원격 저장소 `origin/feature/setup-git-guardrails` 동기화 완료 (커밋 `4742716`)
-  - [x] `main`, `staging`, `feature/setup-git-guardrails` 로컬 브랜치 생성 및 원격 트래킹 설정 완료
-  - [x] Syncthing 동기화 점검 (충돌/임시 파일 0건, 정상 연동)
-  - [x] `uv` 기반 Python 가상환경(`.venv`) 및 백엔드 28종 패키지 설치 완료
-  - [x] Mem0 장기 기억(`mem0ai@3.1.6`) 및 Qdrant 로컬 저장소 초기화 완료
-  - [x] 백엔드 6대 핵심 모듈(`SessionManager`, `Mem0`, `Graphify`, `CortexGuard`, `gstack`, `VibeEngine`) 무결성 진단 100% PASS
-  - [x] 포터블 데스크톱 패키지(`dist/agentsmith-desktop-v1.0.0.zip`) 및 C# Native 인스톨러(`AgentSmith_Desktop_Setup_v1.0.0.exe`) 빌드 성공
+## 🎯 0단계: PC 저장소 현행화, 바이너리 표준 운영 지침(SOG) & 장애 해결 (완료 - 2026-08-23)
+- [x] **타 PC 작업내역 수령 및 저장소 현행화 (호스트: HOME_SUNKIM / MZC_SUNKIM317_L)**:
+  - [x] 원격 저장소 `origin/feature/setup-git-guardrails` 동기화 완료
+  - [x] 웹뷰 검은 화면(Black Screen) Zero-Dependency Vanilla JS 렌더러 전환으로 영구 해결
+  - [x] **Trinity Air 브랜드 로고 기반 밝은 Edge 네온 벡터 로고 리마스터 및 UI 전면 적용**
+  - [x] **Agent Smith Studio 중앙 Welcome(에디터) 위치 자동 마운트 및 3창 분리 레이아웃 완성**
+  - [x] 포터블 데스크톱 패키지(`dist/agentsmith-desktop-v1.0.0.zip`) 및 C# Native 인스톨러(`AgentSmith_Desktop_Setup_v1.0.0.exe`) 빌드 성공 (무결성 정밀 진단 100% PASS)
   - [x] 2026-08-21 PC 현행화 및 빌드 완료 보고서 작성 ([docs/2026-08-21_pc_sync_and_build_report.md](file:///c:/dev/antigravity-workspace/agentsmith/docs/2026-08-21_pc_sync_and_build_report.md))
   - [x] 2026-08-21 PC 동기화 명세서 작성 ([coding-agent/docs/specs/2026-08-21_pc_synchronization_spec.md](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/specs/2026-08-21_pc_synchronization_spec.md))
 - [x] **바이너리 빌드 반복 오류 분석 및 표준 운영 지침서(SOG) 수립 (/plan-eng-review)**:

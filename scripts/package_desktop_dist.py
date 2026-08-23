@@ -142,7 +142,35 @@ if ELECTRON_SRC.exists():
     # --- VS Code Official Portable Mode (data/ Directory) ---
     portable_data_dir = APP_DEST / "data"
     portable_data_dir.mkdir(parents=True, exist_ok=True)
-    print(f"[*] Created official VS Code Portable mode directory at {portable_data_dir}...")
+    user_settings_dir = portable_data_dir / "user-data" / "User"
+    user_settings_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Pre-configure settings.json to disable default welcome walkthrough and show Agent Smith Studio cleanly
+    import json
+    settings_file = user_settings_dir / "settings.json"
+    default_settings = {
+        "workbench.startupEditor": "none",
+        "workbench.tips.enabled": False,
+        "workbench.colorTheme": "Default Dark Modern",
+        "window.titleBarStyle": "custom",
+        "security.workspace.trust.enabled": False,
+        "telemetry.telemetryLevel": "off"
+    }
+    if settings_file.exists():
+        try:
+            with open(settings_file, "r", encoding="utf-8") as sf:
+                existing_settings = json.load(sf)
+            existing_settings.update(default_settings)
+            with open(settings_file, "w", encoding="utf-8") as sf:
+                json.dump(existing_settings, sf, indent=2)
+        except Exception:
+            with open(settings_file, "w", encoding="utf-8") as sf:
+                json.dump(default_settings, sf, indent=2)
+    else:
+        with open(settings_file, "w", encoding="utf-8") as sf:
+            json.dump(default_settings, sf, indent=2)
+            
+    print(f"[*] Created official VS Code Portable mode directory & default settings at {portable_data_dir}...")
 
     # --- JS Direct Hot-Patching for %USERPROFILE% Declaration (TypeError & Subprocess Crash Prevention) ---
     print(f"[*] Applying Universal Safe JS Declaration Hot-Patch for %USERPROFILE% guardrails...")

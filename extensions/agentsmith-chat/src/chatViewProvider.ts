@@ -42,13 +42,16 @@ export class AgentSmithChatViewProvider implements vscode.WebviewViewProvider {
         const panel = vscode.window.createWebviewPanel(
             'agentsmithStudioPanel',
             'Agent Smith Studio',
-            column || vscode.ViewColumn.One,
+            vscode.ViewColumn.One,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
                 localResourceRoots: [extensionUri]
             }
         );
+
+        // 탭 헤더에 Trinity Air 브랜드 로고 아이콘 지정
+        panel.iconPath = vscode.Uri.joinPath(extensionUri, 'media', 'logo.svg');
 
         const provider = new AgentSmithChatViewProvider(extensionUri);
         panel.webview.html = provider._getHtmlForWebview(panel.webview);
@@ -85,7 +88,11 @@ export class AgentSmithChatViewProvider implements vscode.WebviewViewProvider {
 
                     try {
                         const doc = await vscode.workspace.openTextDocument(targetUri);
-                        await vscode.window.showTextDocument(doc, { preview: false });
+                        // 3창 워크플로우: Studio(중앙)를 유지하면서 우측 분할 창(ViewColumn.Beside)으로 파일 오픈
+                        await vscode.window.showTextDocument(doc, { 
+                            viewColumn: vscode.ViewColumn.Beside, 
+                            preview: false 
+                        });
                     } catch (e) {
                         vscode.window.showWarningMessage(`문서를 열 수 없습니다: ${data.path}`);
                     }
