@@ -3,23 +3,175 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' vscode-resource: https:; script-src 'unsafe-inline' vscode-resource: https:; img-src 'self' data: vscode-resource: https:; connect-src http://localhost:5000 http://127.0.0.1:5000 ws://localhost:3000;">
   <title>Agent Smith Intelligent Studio</title>
-  
-  <!-- React & Babel CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-night">
-  <div id="root"></div>
+  <div id="app-root">
+    <!-- Top Nav Header -->
+    <header class="studio-header">
+      <div class="header-brand">
+        <div class="brand-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+        </div>
+        <span class="brand-name">AGENT SMITH</span>
+        <span class="brand-badge">STUDIO</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-editor" class="icon-action-btn" title="에디터 중앙 3-Panel 스튜디오 열기">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
+          </svg>
+          <span class="action-text">와이드 뷰</span>
+        </button>
+      </div>
+    </header>
 
-  <!-- React 18 Script -->
-  <script type="text/babel" src="app.js"></script>
+    <!-- Top Drawer Menu Buttons -->
+    <nav class="drawer-nav">
+      <button class="nav-btn" data-drawer="artifacts" title="생성된 계획서/명세서 목록">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">아티팩트</span>
+      </button>
+      <button class="nav-btn" data-drawer="history" title="대화 세션 히스토리">
+        <span class="nav-icon">🕒</span>
+        <span class="nav-label">기록</span>
+        <span id="badge-sessions" class="nav-count">1</span>
+      </button>
+      <button class="nav-btn" data-drawer="memory" title="Mem0 개발자 프로필 및 영속 규칙">
+        <span class="nav-icon">🧠</span>
+        <span class="nav-label">기억</span>
+        <span id="badge-memories" class="nav-count">5</span>
+      </button>
+      <button class="nav-btn" data-drawer="graph" title="Graphify Python AST 지식 그래프">
+        <span class="nav-icon">🕸️</span>
+        <span class="nav-label">그래프</span>
+        <span id="badge-graph" class="nav-count">48</span>
+      </button>
+      <button class="nav-btn" data-drawer="gstack" title="gstack 전문가 페르소나 및 워크플로우">
+        <span class="nav-icon">🧩</span>
+        <span class="nav-label">gstack</span>
+      </button>
+    </nav>
+
+    <!-- Mode Selector & Controls -->
+    <div class="control-bar">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="planning" title="의도 분석 후 승인 계획서 생성">
+          <span class="mode-icon">🧠</span> Plan
+        </button>
+        <button class="mode-tab" data-mode="fast" title="단일 파일 고속 자율 수정">
+          <span class="mode-icon">⚡</span> Fast
+        </button>
+        <button class="mode-tab" data-mode="qa" title="샌드박스 테스트 및 결함 자동 복구">
+          <span class="mode-icon">🧪</span> QA
+        </button>
+      </div>
+      <div class="target-file-selector">
+        <span class="selector-label">Target:</span>
+        <select id="select-target-file" class="compact-select">
+          <option value="auth_service.py">auth_service.py</option>
+          <option value="session_manager.py">session_manager.py</option>
+          <option value="vibe_engine.py">vibe_engine.py</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Content Area (Responsive Layout) -->
+    <main class="studio-main">
+      <!-- Left Column: Explorer (Only visible in wide editor panel) -->
+      <aside class="panel-column explorer-column">
+        <div class="column-header">
+          <span>WORKSPACE FILES</span>
+          <span class="column-badge">3</span>
+        </div>
+        <div id="file-list-container" class="file-list"></div>
+      </aside>
+
+      <!-- Center Column: Chat & Stream Reasoning -->
+      <section class="panel-column chat-column">
+        <div class="column-header">
+          <span>AI REASONING & CHAT</span>
+          <span id="current-persona-badge" class="persona-tag">@se (Software Engineer)</span>
+        </div>
+        
+        <div id="chat-messages-container" class="chat-messages">
+          <!-- Chat Bubbles will be dynamically rendered here -->
+        </div>
+      </section>
+
+      <!-- Right Column: Live Diff Viewer (Only visible in wide editor panel) -->
+      <aside class="panel-column diff-column">
+        <div class="column-header">
+          <span>LIVE MULTI-FILE DIFF</span>
+          <div class="diff-header-actions">
+            <button id="btn-accept-diff" class="btn-diff-action accept" title="변경사항 작업공간에 수락">✓ Accept</button>
+            <button id="btn-reject-diff" class="btn-diff-action reject" title="변경사항 거절">✕ Reject</button>
+          </div>
+        </div>
+        <div id="diff-viewer-container" class="diff-viewer"></div>
+      </aside>
+    </main>
+
+    <!-- Bottom Prompt & Input Box -->
+    <footer class="studio-footer">
+      <div class="prompt-box-container">
+        <div class="prompt-header">
+          <div class="model-select-wrapper">
+            <select id="select-ai-model" class="model-select">
+              <option value="qwen/qwen-2.5-coder-32b-instruct">Qwen 2.5 Coder 32B (SOTA Coding)</option>
+              <option value="google/gemini-2.0-flash">Gemini 2.0 Flash (Fast Reasoning)</option>
+              <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Top Architect)</option>
+              <option value="openai/gpt-4o">GPT-4o Omnimodal (Leader)</option>
+              <option value="ollama/local-qwen">Local Ollama (11434 - On-Prem)</option>
+            </select>
+          </div>
+          <span id="server-status-pill" class="status-pill online">● ONLINE :5000</span>
+        </div>
+
+        <div class="input-row">
+          <textarea id="prompt-input" class="vibe-textarea" rows="2" placeholder="도메인 의도(Vibe)를 자연어로 입력하세요... (Enter: 전송, Shift+Enter: 줄바꿈)"></textarea>
+          <button id="btn-send-prompt" class="btn-vibe-send" title="Vibe Coding 엔진 가동">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            <span class="send-text">RUN</span>
+          </button>
+        </div>
+
+        <div class="guardrail-footer-bar">
+          <span class="guard-item">🛡️ SAST: PASSED</span>
+          <span class="guard-sep">|</span>
+          <span class="guard-item">🇰🇷 한글 주석 강제</span>
+          <span class="guard-sep">|</span>
+          <span class="guard-item">UTF-8 Bom-less</span>
+          <span class="guard-sep">|</span>
+          <span id="status-mem0-info" class="guard-item">🧠 Mem0: Synced</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Slide Drawer Overlay Modals -->
+    <div id="drawer-overlay" class="drawer-overlay hidden">
+      <div class="drawer-panel">
+        <div class="drawer-top-bar">
+          <h3 id="drawer-title" class="drawer-title">📋 아티팩트 목록</h3>
+          <button id="btn-close-drawer" class="btn-close-drawer" title="닫기">✕</button>
+        </div>
+        <div id="drawer-content-body" class="drawer-body">
+          <!-- Dynamic Drawer Content -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

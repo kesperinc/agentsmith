@@ -66,6 +66,10 @@ export class AgentSmithChatViewProvider implements vscode.WebviewViewProvider {
 
     private async _handleMessage(data: any) {
         switch (data.command) {
+            case 'openEditorPanel': {
+                AgentSmithChatViewProvider.createOrShowEditorPanel(this._extensionUri);
+                break;
+            }
             case 'openFile': {
                 if (data.path) {
                     const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -89,11 +93,19 @@ export class AgentSmithChatViewProvider implements vscode.WebviewViewProvider {
                 break;
             }
             case 'acceptDiff': {
-                vscode.window.showInformationMessage(`[Agent Smith] ${data.file || '파일'}의 변경사항이 수락되어 적용되었습니다.`);
+                vscode.window.showInformationMessage(`[Agent Smith] ${data.file || '파일'}의 변경사항이 수락되어 작업공간에 반영되었습니다.`);
                 break;
             }
             case 'rollbackDiff': {
                 vscode.window.showInformationMessage(`[Agent Smith] ${data.file || '파일'}의 변경사항이 원본으로 롤백되었습니다.`);
+                break;
+            }
+            case 'notify': {
+                if (data.type === 'error') {
+                    vscode.window.showErrorMessage(`[Agent Smith] ${data.message}`);
+                } else {
+                    vscode.window.showInformationMessage(`[Agent Smith] ${data.message}`);
+                }
                 break;
             }
         }
