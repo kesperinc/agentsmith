@@ -208,6 +208,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **2026-08-20** | 이전 개발 PC (Workstation) | Python 3.11 / Node v20 / uv 0.10 / Bun 1.3 | 바이너리 빌드 문제점 8대 원인 해결, Phase 2 코어 완성 | 최초 핸드오버 작성 |
 | **2026-08-21** | `MZC_SUNKIM317_L`<br>(Windows 11 x64, 10.0.26200) | Python 3.14.4 / Node v24.14.1<br>uv 0.11.19 / Bun 1.3.11 | - Git 3개 브랜치 동기화 (`feature`, `staging`, `main`)<br>- Syncthing 충돌 0건<br>- 백엔드 6대 모듈 100% PASS<br>- `AgentSmith_Desktop_Setup_v1.0.0.exe` (442.69MB)<br>- `agentsmith-desktop-v1.0.0.zip` (444.72MB) | **동기화 및 1-Click 빌드 성공 검증 완료** |
+| **2026-08-23** | `HOME_SUNKIM`<br>(Windows 11 x64, 10.0.26200) | Python 3.11.15 / Node v24.14.1<br>uv 0.11.19 / Bun 1.3.11 | - Git 3개 브랜치 동기화 (`feature`, `staging`, `main`)<br>- `.env` 독립 환경설정 생성<br>- 백엔드 6대 모듈 100% PASS<br>- `AgentSmith_Desktop_Setup_v1.0.0.exe` (442.60MB)<br>- `agentsmith-desktop-v1.0.0.zip` (444.71MB) | **원격 브랜치 검토 및 현행화 완료** |
 
 ---
 
