@@ -17,33 +17,15 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "agentsmith-chat-container",
-          "title": "Agent Smith",
-          "icon": "media/logo.svg"
-        }
-      ]
-    },
-    "views": {
-      "agentsmith-chat-container": [
-        {
-          "type": "webview",
-          "id": "agentsmith.chatView",
-          "name": "Agent Smith Studio"
-        }
-      ]
-    },
     "commands": [
       {
-        "command": "agentsmith.openChat",
-        "title": "Agent Smith: Open Studio",
+        "command": "agentsmith.openEditorPanel",
+        "title": "Agent Smith: Open Studio in Editor",
         "category": "Agent Smith"
       },
       {
-        "command": "agentsmith.openEditorPanel",
-        "title": "Agent Smith: Open 3-Panel Studio in Editor",
+        "command": "agentsmith.openChat",
+        "title": "Agent Smith: Open Studio",
         "category": "Agent Smith"
       }
     ]

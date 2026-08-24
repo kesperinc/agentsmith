@@ -1,36 +1,50 @@
 {
   "name": "agentsmith-chat",
-  "displayName": "Agent Smith AI Chat Panel",
-  "description": "Enterprise Coding Agent Webview Chat Sidebar for Agent Smith IDE",
+  "displayName": "Agent Smith AI Studio",
+  "description": "Enterprise Coding Agent Center Studio & Vibe Coding Orchestrator for Agent Smith IDE",
   "version": "1.0.0",
   "publisher": "kesperinc",
   "engines": {
     "vscode": "^1.86.0"
   },
   "categories": [
-    "Other"
+    "AI",
+    "Chat",
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./src/extension.js",
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
+    "commands": [
+      {
+        "command": "agentsmith.openEditorPanel",
+        "title": "Agent Smith: Open Studio (중앙 에디터)",
+        "category": "Agent Smith",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "agentsmith.openChat",
+        "title": "Agent Smith: Open Studio",
+        "category": "Agent Smith"
+      }
+    ],
+    "menus": {
+      "editor/title": [
         {
-          "id": "agentsmith-ai-sidebar",
-          "title": "Agent Smith AI",
-          "icon": "media/logo-sidebar.png"
+          "command": "agentsmith.openEditorPanel",
+          "group": "navigation",
+          "when": "!resource"
         }
       ]
     },
-    "views": {
-      "agentsmith-ai-sidebar": [
-        {
-          "type": "webview",
-          "id": "agentsmith-chat-view",
-          "name": "Agent Smith Assistant",
-          "contextualTitle": "AI Chat"
-        }
-      ]
-    }
+    "keybindings": [
+      {
+        "command": "agentsmith.openEditorPanel",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a"
+      }
+    ]
   }
 }

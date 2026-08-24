@@ -302,13 +302,22 @@ if IMAGES_SRC.exists():
         if src_img.exists():
             shutil.copy2(src_img, RESOURCES_DEST / img_file)
 
-# 6.1 Copy Built-in Extension: extensions/agentsmith-chat
-EXTENSION_SRC = ROOT_DIR / "extensions" / "agentsmith-chat"
+# 6.1 Copy Built-in Extension: extension/agentsmith-chat (JS 기반 최신 버전 우선)
+# ※ extensions/(TypeScript 기반) 대신 extension/(순수 JS, main: ./src/extension.js) 를 사용합니다.
+EXTENSION_SRC = ROOT_DIR / "extension" / "agentsmith-chat"
+# fallback: extensions/ 폴더가 있으면 사용 (하위 호환)
+if not EXTENSION_SRC.exists():
+    EXTENSION_SRC = ROOT_DIR / "extensions" / "agentsmith-chat"
 EXTENSION_DEST1 = RESOURCES_APP_DEST / "extensions" / "agentsmith-chat"
 EXTENSION_DEST2 = APP_DEST / "resources" / "app" / "extensions" / "agentsmith-chat"
 
 if EXTENSION_SRC.exists():
     print(f"[*] Copying built-in Agent Smith Studio extension ({EXTENSION_SRC})...")
+    # 기존에 잘못 복사된 TypeScript 버전 제거 후 정확한 JS 버전 복사
+    if EXTENSION_DEST1.exists():
+        shutil.rmtree(EXTENSION_DEST1, ignore_errors=True)
+    if EXTENSION_DEST2.exists():
+        shutil.rmtree(EXTENSION_DEST2, ignore_errors=True)
     safe_copytree(EXTENSION_SRC, EXTENSION_DEST1)
     if APP_DEST.exists():
         safe_copytree(EXTENSION_SRC, EXTENSION_DEST2)
