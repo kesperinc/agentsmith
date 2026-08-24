@@ -2,13 +2,18 @@
 
 본 문서는 **Agent Smith IDE (Custom Code-OSS AI Editor)**의 개발 과제 및 릴리즈 로드맵 현행화 목록입니다. 로컬 데스크톱 중심의 IDE 빌드, 브랜딩, 가드레일, 온프레미스 배포 호환성 확보 및 CLI/IDE 연동 기능에 집중하도록 작성되었습니다.
 
-* **최종 현행화 일자**: 2026년 8월 24일
+* **최종 현행화 일자**: 2026년 8월 25일
 * **검증 시스템**: `MZC_SUNKIM317_L` / `HOME_SUNKIM` (Windows 11 x64, Python 3.14, Node v24.14.1, Bun 1.3.11, uv 0.11.19)
 * **개발 기조**: Windows 빌드 및 기능 완성을 최우선(Phase 1)으로 진행하며, **Antigravity 스타일 아티팩트/챗 패널 및 지능형 코어 엔진 고도화(Phase 2 - 완료)**, **리눅스/온프레미스 Red Hat 배포 호환성(Phase 3)** 및 **AI Full Stack 세일즈 오퍼링(NVIDIA/Dell/MZC 비교 포털 & 4-Phase 로드맵)**을 전사 지원합니다.
 
 ---
 
-## 🎯 0단계: PC 저장소 현행화, 바이너리 표준 운영 지침(SOG) & 장애 해결 (완료 - 2026-08-24)
+## 🎯 0단계: PC 저장소 현행화, 원격 깃허브 브랜치 동기화 및 장애 해결 (완료 - 2026-08-25)
+- [x] **원격 깃허브 main / staging / feature 브랜치 전수 검토 및 완전 현행화 (2026-08-25 완료)**:
+  - [x] 원격 저장소 `origin/feature/setup-git-guardrails`, `origin/staging`, `origin/main` 전수 Fast-Forward 머지 및 push 완료 (`31de075` 동기화)
+  - [x] `coding-agent/` 가상환경 `uv sync` 실행 및 파이썬 의존성 패키지 최신화 검증 완료
+  - [x] 2026-08-25 PC 현행화 보고서 작성 ([docs/2026-08-25_pc_synchronization_and_handover_report.md](file:///c:/dev/antigravity-workspace/agentsmith/docs/2026-08-25_pc_synchronization_and_handover_report.md))
+  - [x] 2026-08-25 PC 동기화 명세서 작성 ([coding-agent/docs/specs/2026-08-25_pc_synchronization_spec.md](file:///c:/dev/antigravity-workspace/agentsmith/coding-agent/docs/specs/2026-08-25_pc_synchronization_spec.md))
 - [x] **타 PC 작업내역 수령 및 저장소 현행화 (호스트: HOME_SUNKIM ➔ MZC_SUNKIM317_L)**:
   - [x] 원격 저장소 `origin/feature/setup-git-guardrails` (`620028d`), `staging`/`main` (`4742716`) 전수 동기화 완료
   - [x] 웹뷰 검은 화면(Black Screen) Zero-Dependency Vanilla JS 렌더러 전환으로 영구 해결
